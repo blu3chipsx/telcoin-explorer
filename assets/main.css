@@ -1982,3 +1982,141 @@ a.page-btn:hover {
     grid-row: 1;
   }
 }
+
+/* ══ BLOCKS PAGE — MOBILE OPTIMISED ═════════════════════════════════ */
+
+@media (max-width: 768px) {
+  /* Header stacks vertically */
+  .blocks-page-header {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .blocks-page-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .page-btn-link, .page-btn {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+  }
+  /* Table: hide Gas Used, Gas Limit, Size — keep Block, Age, Validator, TXS, Util */
+  .blocks-table th:nth-child(5),
+  .blocks-table td:nth-child(5),
+  .blocks-table th:nth-child(6),
+  .blocks-table td:nth-child(6),
+  .blocks-table th:nth-child(8),
+  .blocks-table td:nth-child(8) { display: none !important; }
+
+  .blocks-table th, .blocks-table td {
+    padding: 10px 10px !important;
+    font-size: 11px !important;
+  }
+  /* Block number shorter */
+  .block-num { font-size: 12px !important; }
+  /* Util bar narrower */
+  .util-bar { width: 40px !important; }
+  .util-cell { gap: 4px !important; min-width: 70px !important; }
+
+  /* Pagination centered */
+  .blocks-pagination {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 16px 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* On very small screens, also hide Utilisation */
+  .blocks-table th:nth-child(7),
+  .blocks-table td:nth-child(7) { display: none !important; }
+  /* Only show: Block, Age, Validator, TXS */
+  .blocks-inner { padding: 12px 10px !important; }
+  .blocks-table th:nth-child(3),
+  .blocks-table td:nth-child(3) { display: none !important; }
+}
+
+/* ══ VALIDATORS PAGE — MOBILE OPTIMISED ═════════════════════════════ */
+
+@media (max-width: 768px) {
+  /* Info grid: 1 column on mobile */
+  .validator-info-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  /* Types grid: already 1 col, just tighten padding */
+  .validator-types-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .vtype-card { padding: 14px !important; }
+
+  /* Validator list: stack address info */
+  .validator-list-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    padding: 12px 14px !important;
+  }
+  .validator-addr { font-size: 12px !important; }
+
+  /* Page title row: stack */
+  .page-title-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  /* Epoch info cards: 2 col */
+  .epoch-info-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Registry address: wrap */
+  .registry-address {
+    word-break: break-all !important;
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .validator-info-grid { grid-template-columns: 1fr !important; }
+  .epoch-info-grid { grid-template-columns: 1fr !important; }
+  .vtype-badge { font-size: 10px !important; padding: 3px 8px !important; }
+}
+
+/* ══ BLOCKS MOBILE CARD ROWS ═════════════════════════════════════════ */
+
+/* Hide mobile cards on desktop */
+.block-mobile-card { display: none; }
+
+@media (max-width: 600px) {
+  /* Hide regular table rows, show mobile cards */
+  .blocks-table thead { display: none !important; }
+  .blocks-table tr:not(.block-mobile-card) { display: none !important; }
+  .block-mobile-card { display: table-row !important; }
+  .block-mobile-card td { padding: 0 !important; border-bottom: 1px solid var(--border-subtle) !important; }
+
+  .bmc-inner {
+    padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .bmc-top {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .bmc-num { font-size: 14px !important; font-weight: 600 !important; }
+  .bmc-age { font-size: 11px; color: var(--text-muted); flex: 1; }
+  .bmc-zero { font-size: 11px; color: var(--text-muted); }
+  .bmc-bot {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .bmc-label {
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-muted); font-weight: 600;
+  }
+  .bmc-addr { font-size: 12px !important; }
+
+  /* Blocks page outer padding */
+  .blocks-inner { padding: 12px 10px !important; }
+  .blocks-page-header { margin-bottom: 12px !important; }
+}

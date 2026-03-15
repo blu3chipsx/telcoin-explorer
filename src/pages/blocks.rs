@@ -141,6 +141,34 @@ pub fn BlocksPage(page: u64) -> Element {
                                         }
                                         td { class: "td-faint td-mono", { format!("{}B", block.size) } }
                                     }
+                                    // Mobile card (hidden on desktop via CSS)
+                                    tr { class: "block-mobile-card",
+                                        td { colspan: "8",
+                                            div { class: "bmc-inner",
+                                                div { class: "bmc-top",
+                                                    Link { to: Route::BlockPage { block_number: block.number },
+                                                        span { class: "hash-cell bmc-num",
+                                                            { format!("#{}", block.number) }
+                                                        }
+                                                    }
+                                                    span { class: "bmc-age", "{unix_to_age(block.timestamp)}" }
+                                                    if block.transaction_count > 0 {
+                                                        span { class: "tx-count-badge", "{block.transaction_count} txns" }
+                                                    } else {
+                                                        span { class: "bmc-zero", "0 txns" }
+                                                    }
+                                                }
+                                                div { class: "bmc-bot",
+                                                    span { class: "bmc-label", "Validator" }
+                                                    Link { to: Route::AddressPage { address: block.validator.clone() },
+                                                        span { class: "hash-cell bmc-addr",
+                                                            "{shorten_addr(&block.validator)}"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
