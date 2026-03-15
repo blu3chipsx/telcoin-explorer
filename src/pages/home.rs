@@ -99,6 +99,12 @@ pub fn HomePage() -> Element {
                             value: format!("{}", total_txs), sub: "In latest 10 blocks".to_string() }
                         StatTile { icon: "🔗", label: "CHAIN ID",
                             value: format!("{}", s.chain_id), sub: "Adiri Testnet".to_string() }
+                        StatTile { icon: "⏱", label: "BLOCK TIME",
+                            value: {
+                                let t = *avg_block_time.read();
+                                if t > 0.0 { format!("{:.1}s", t) } else { "—".to_string() }
+                            },
+                            sub: "Avg last 10 blocks".to_string() }
                         StatTile { icon: "〜", label: "NETWORK",
                             value: "● LIVE".to_string(), sub: "rpc.telcoin.network".to_string() }
                     } else {
@@ -137,32 +143,34 @@ pub fn HomePage() -> Element {
                         } else {
                             ul { class: "data-list",
                                 for block in blocks.read().iter() {
-                                    li { class: "block-list-item",
-                                        div { class: "bli-left",
-                                            div { class: "bli-icon" }
-                                            div { class: "bli-info",
-                                                Link { to: Route::BlockPage { block_number: block.number },
-                                                    span { class: "hash-cell",
-                                                        { format!("#{}", block.number) }
-                                                    }
+                                    li { class: "home-row",
+                                        // Block icon
+                                        div { class: "home-row-icon block-row-icon" }
+                                        // Block number + age
+                                        div { class: "home-row-main",
+                                            Link { to: Route::BlockPage { block_number: block.number },
+                                                span { class: "hash-cell home-row-id",
+                                                    { format!("{}", block.number) }
                                                 }
-                                                div { class: "bli-sub",
-                                                    "Validator "
-                                                    Link { to: Route::AddressPage { address: block.validator.clone() },
-                                                        span { class: "hash-cell small",
-                                                            "{shorten_addr(&block.validator)}"
-                                                        }
-                                                    }
-                                                    " · {unix_to_age(block.timestamp)}"
+                                            }
+                                            span { class: "home-row-age", "{unix_to_age(block.timestamp)}" }
+                                        }
+                                        // Validator
+                                        div { class: "home-row-mid",
+                                            span { class: "home-row-label", "Validator" }
+                                            Link { to: Route::AddressPage { address: block.validator.clone() },
+                                                span { class: "hash-cell home-row-addr",
+                                                    "{shorten_addr(&block.validator)}"
                                                 }
+                                            }
+                                            span { class: "home-row-detail",
+                                                { format!("{} txns in {} gas", block.transaction_count, block.gas_used) }
                                             }
                                         }
-                                        div { class: "bli-right",
+                                        // Tx badge
+                                        div { class: "home-row-right",
                                             span { class: "tx-badge",
                                                 "{block.transaction_count} txns"
-                                            }
-                                            span { class: "bli-gas",
-                                                { format!("{} gas", block.gas_used) }
                                             }
                                         }
                                     }
@@ -191,25 +199,24 @@ pub fn HomePage() -> Element {
                         } else {
                             ul { class: "data-list",
                                 for (hash, block_num) in recent_txs.iter() {
-                                    li { class: "block-list-item",
-                                        div { class: "bli-left",
-                                            div { class: "bli-icon bli-icon-tx" }
-                                            div { class: "bli-info",
-                                                Link { to: Route::TransactionPage { hash: hash.clone() },
-                                                    span { class: "hash-cell",
-                                                        "{shorten_hash(hash)}"
-                                                    }
-                                                }
-                                                div { class: "bli-sub",
-                                                    "Block "
-                                                    Link { to: Route::BlockPage { block_number: *block_num },
-                                                        span { class: "hash-cell small",
-                                                            { format!("#{}", block_num) }
-                                                        }
-                                                    }
+                                    li { class: "home-row",
+                                        div { class: "home-row-icon tx-row-icon" }
+                                        div { class: "home-row-main",
+                                            Link { to: Route::TransactionPage { hash: hash.clone() },
+                                                span { class: "hash-cell home-row-id",
+                                                    "{shorten_hash(hash)}"
                                                 }
                                             }
                                         }
+                                        div { class: "home-row-mid",
+                                            span { class: "home-row-label", "Block" }
+                                            Link { to: Route::BlockPage { block_number: *block_num },
+                                                span { class: "hash-cell home-row-addr",
+                                                    { format!("#{}", block_num) }
+                                                }
+                                            }
+                                        }
+                                        div { class: "home-row-right" }
                                     }
                                 }
                             }
