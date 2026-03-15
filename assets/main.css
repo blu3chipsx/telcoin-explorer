@@ -1662,3 +1662,217 @@ a.page-btn:hover {
   .stats-band { padding: 16px !important; }
   .panel::before { display: none; }
 }
+
+/* ══ FOOTER ══════════════════════════════════════════════════════════ */
+
+.app-wrap { display: flex; flex-direction: column; min-height: 100vh; }
+.app-main { flex: 1; }
+
+.site-footer {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+  padding: 20px 28px;
+  margin-top: auto;
+}
+.footer-inner {
+  max-width: 1400px; margin: 0 auto;
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-brand {
+  font-weight: 700; color: var(--text-primary); font-size: 14px;
+}
+.footer-sep { color: var(--text-muted); margin: 0 6px; }
+.footer-sub { color: var(--text-muted); font-size: 12px; }
+.footer-links {
+  display: flex; align-items: center; gap: 20px;
+}
+.footer-link {
+  color: var(--text-secondary); font-size: 12px;
+  text-decoration: none; display: flex; align-items: center; gap: 4px;
+  transition: color 0.15s;
+}
+.footer-link:hover { color: var(--tel-blue); }
+.footer-right {
+  display: flex; align-items: center; gap: 12px;
+}
+.footer-version {
+  background: var(--tel-blue-dim);
+  border: 1px solid var(--tel-blue-border);
+  color: var(--tel-blue);
+  padding: 2px 8px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+}
+.footer-copy { color: var(--text-muted); font-size: 11px; }
+
+/* ══ THEME TOGGLE ════════════════════════════════════════════════════ */
+
+.theme-toggle {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-mid);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 15px;
+  padding: 5px 9px;
+  transition: all 0.15s;
+  line-height: 1;
+}
+.theme-toggle:hover {
+  border-color: var(--tel-blue-border);
+  background: var(--tel-blue-dim);
+}
+
+/* ══ LIGHT MODE VARIABLES ════════════════════════════════════════════ */
+
+[data-theme="light"] {
+  --bg-base:     #f0f4f8;
+  --bg-surface:  #e2e8f0;
+  --bg-card:     #ffffff;
+  --bg-input:    #ffffff;
+  --text-primary:   #0f172a;
+  --text-secondary: #334155;
+  --text-muted:     #64748b;
+  --border:         #cbd5e1;
+  --border-subtle:  #e2e8f0;
+  --border-mid:     #94a3b8;
+  --tel-blue:       #0284c7;
+  --tel-blue-dim:   rgba(2,132,199,0.08);
+  --tel-blue-border:rgba(2,132,199,0.3);
+  --shadow-card:    0 1px 6px rgba(0,0,0,0.08);
+}
+[data-theme="light"] .header {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+[data-theme="light"] .hero {
+  background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 60%, #f0f4f8 100%) !important;
+}
+[data-theme="light"] .hero-title { color: #0f172a; }
+[data-theme="light"] .hero-sub { color: #475569; }
+[data-theme="light"] .stats-band { background: #e2e8f0 !important; }
+
+/* ══ TX STATUS BADGE ═════════════════════════════════════════════════ */
+
+.tx-status-wrap { padding: 16px 20px 0; }
+.tx-status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 6px;
+  font-size: 13px; font-weight: 700;
+}
+.tx-status-badge.success {
+  background: rgba(34,197,94,0.12);
+  border: 1px solid rgba(34,197,94,0.3);
+  color: #22c55e;
+}
+.tx-status-badge.failed {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.3);
+  color: #ef4444;
+}
+
+/* ══ STATS GRID — 6 tiles ════════════════════════════════════════════ */
+
+.stats-grid-centered {
+  grid-template-columns: repeat(6, 1fr) !important;
+}
+@media (max-width: 1200px) {
+  .stats-grid-centered { grid-template-columns: repeat(3, 1fr) !important; }
+}
+@media (max-width: 700px) {
+  .stats-grid-centered { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* Footer mobile */
+@media (max-width: 768px) {
+  .footer-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .site-footer { padding: 16px; }
+}
+
+/* ══ STAT TILES REDESIGN — 2 rows of 3, no truncation ══════════════ */
+
+.stats-grid-centered {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 16px !important;
+}
+@media (max-width: 900px) {
+  .stats-grid-centered { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 500px) {
+  .stats-grid-centered { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+}
+
+.stat-tile {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  padding: 20px 22px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s !important;
+  position: relative !important;
+  overflow: hidden !important;
+  min-width: 0 !important;
+}
+.stat-tile::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: radial-gradient(circle at 20% 50%, rgba(45,206,255,0.05), transparent 70%) !important;
+  pointer-events: none !important;
+}
+.stat-tile:hover {
+  border-color: rgba(45,206,255,0.35) !important;
+  box-shadow: 0 0 24px rgba(45,206,255,0.1) !important;
+  transform: translateY(-2px) !important;
+}
+
+.stat-tile-icon {
+  font-size: 18px !important;
+  line-height: 1 !important;
+  margin-bottom: 4px !important;
+  opacity: 0.7 !important;
+}
+.stat-tile-label {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  color: var(--text-muted) !important;
+}
+.stat-tile-value {
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  color: var(--text-primary) !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.stat-tile-value.live {
+  font-size: 22px !important;
+  color: #22c55e !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.stat-tile-sub {
+  font-size: 11px !important;
+  color: var(--text-muted) !important;
+  margin-top: 2px !important;
+}
+
+/* Remove the old icon-based layout */
+.stat-tile-body { flex: 1 !important; min-width: 0 !important; }
+
+/* Stats band updated padding */
+.stats-band {
+  background: var(--bg-surface) !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 28px !important;
+}

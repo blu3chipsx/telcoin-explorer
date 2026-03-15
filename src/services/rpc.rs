@@ -521,3 +521,71 @@ pub async fn get_validators_from_registry() -> Result<Vec<String>, String> {
     }
     Ok(validators)
 }
+
+// ─── Token name/symbol resolution ─────────────────────────────────────────
+
+pub async fn get_token_name(contract: &str) -> String {
+    // name() selector: 0x06fdde03
+    let params = serde_json::json!([{"to": contract, "data": "0x06fdde03"}, "latest"]);
+    let result: String = rpc_call("eth_call", params).await.unwrap_or_default();
+    decode_string_result(&result)
+}
+
+pub async fn get_token_symbol(contract: &str) -> String {
+    // symbol() selector: 0x95d89b41
+    let params = serde_json::json!([{"to": contract, "data": "0x95d89b41"}, "latest"]);
+    let result: String = rpc_call("eth_call", params).await.unwrap_or_default();
+    let s = decode_string_result(&result);
+    if s.is_empty() { "ERC-20".to_string() } else { s }
+}
+
+fn decode_string_result(hex: &str) -> String {
+    // ABI-encoded string: 32 bytes offset + 32 bytes length + data
+    let hex = hex.strip_prefix("0x").unwrap_or(hex);
+    if hex.len() < 128 { return String::new(); }
+    // Length is at bytes 64-128
+    let len_hex = &hex[64..128];
+    let len = usize::from_str_radix(len_hex, 16).unwrap_or(0);
+    if len == 0 || len > 100 { return String::new(); }
+    let data_hex = &hex[128..];
+    let bytes_needed = len * 2;
+    if data_hex.len() < bytes_needed { return String::new(); }
+    let bytes: Vec<u8> = (0..len)
+        .filter_map(|i| u8::from_str_radix(&data_hex[i*2..i*2+2], 16).ok())
+        .collect();
+    String::from_utf8(bytes).unwrap_or_default()
+        .chars().filter(|c| c.is_ascii_graphic() || *c == ' ').collect()
+}
+
+// ─── Transaction receipt (status) ─────────────────────────────────────────
+
+pub async fn get_tx_receipt_status(hash: &str) -> Option<bool> {
+    let params = serde_json::json!([hash]);
+    #[derive(serde::Deserialize)]
+    struct Receipt { status: Option<String> }
+    let receipt: Receipt = rpc_call("eth_getTransactionReceipt", params).await.ok()?;
+    receipt.status.map(|s| s == "0x1")
+}
+
+// ─── Block time average ────────────────────────────────────────────────────
+
+pub async fn get_avg_block_time(sample: u64) -> f64 {
+    let latest = match get_block_number().await {
+        Ok(n) => n,
+        Err(_) => return 0.0,
+    };
+    let mut timestamps: Vec<u64> = Vec::new();
+    for i in 0..sample {
+        if let Ok(b) = get_block_by_number(latest.saturating_sub(i)).await {
+            timestamps.push(b.timestamp);
+        }
+    }
+    if timestamps.len() < 2 { return 0.0; }
+    timestamps.sort();
+    let diffs: Vec<f64> = timestamps.windows(2)
+        .map(|w| (w[1] - w[0]) as f64)
+        .filter(|&d| d > 0.0 && d < 60.0)
+        .collect();
+    if diffs.is_empty() { return 0.0; }
+    diffs.iter().sum::<f64>() / diffs.len() as f64
+}

@@ -1,7 +1,7 @@
-// src/components/layout.rs — status bar removed, header only
+// src/components/layout.rs
 use dioxus::prelude::*;
 use crate::components::header::Header;
-use crate::router::Route;
+use crate::components::footer::Footer;
 
 const CSS: Asset = asset!("/assets/main.css");
 
@@ -9,9 +9,12 @@ const CSS: Asset = asset!("/assets/main.css");
 pub fn Layout() -> Element {
     rsx! {
         document::Stylesheet { href: CSS }
-        div { id: "main",
+        div { class: "app-wrap",
             Header {}
-            Outlet::<Route> {}
+            main { class: "app-main",
+                Outlet::<crate::router::Route> {}
+            }
+            Footer {}
         }
     }
 }

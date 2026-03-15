@@ -1,7 +1,8 @@
 // src/pages/transaction.rs
 use dioxus::prelude::*;
 use crate::router::Route;
-use crate::services::rpc::{get_transaction, Transaction, format_tel, shorten_hash};
+use crate::services::rpc::{
+    get_tx_receipt_status,get_transaction, Transaction, format_tel, shorten_hash};
 use crate::components::loading::{Loading, ErrorBox, CopyButton};
 
 #[component]
@@ -9,6 +10,7 @@ pub fn TransactionPage(hash: String) -> Element {
     let tx: Signal<Option<Transaction>> = use_signal(|| None);
     let loading = use_signal(|| true);
     let error: Signal<Option<String>>   = use_signal(|| None);
+    let mut tx_success: Signal<Option<bool>> = use_signal(|| None);
     let hash_clone = hash.clone();
 
     use_effect(move || {
@@ -16,12 +18,14 @@ pub fn TransactionPage(hash: String) -> Element {
         let mut tx      = tx.clone();
         let mut loading = loading.clone();
         let mut error   = error.clone();
+        let mut tx_success = tx_success.clone();
         wasm_bindgen_futures::spawn_local(async move {
             loading.set(true);
             match get_transaction(&hash).await {
                 Ok(t)  => tx.set(Some(t)),
                 Err(e) => error.set(Some(e)),
             }
+            tx_success.set(get_tx_receipt_status(&hash).await);
             loading.set(false);
         });
     });

@@ -4,7 +4,7 @@ use crate::router::Route;
 use crate::services::rpc::{
     is_contract,
     get_balance, get_tx_count, get_block_number, get_token_transfers,
-    parse_transfer_logs, TokenTransfer, shorten_hash, shorten_addr,
+    parse_transfer_logs, get_token_symbol, TokenTransfer, shorten_hash, shorten_addr,
     unix_to_age, CONSENSUS_REGISTRY,
 };
 use crate::components::loading::{Loading, ErrorBox, CopyButton};
@@ -40,7 +40,20 @@ pub fn AddressPage(address: String) -> Element {
             if let Ok(latest) = get_block_number().await {
                 let from = latest.saturating_sub(1000);
                 if let Ok(logs) = get_token_transfers(&address, from, latest).await {
-                    transfers.set(parse_transfer_logs(logs));
+                    let mut parsed = parse_transfer_logs(logs);
+                    // Resolve token symbols for unique contracts
+                    let mut seen: std::collections::HashMap<String, String> = std::collections::HashMap::new();
+                    for t in parsed.iter_mut() {
+                        let sym = if let Some(s) = seen.get(&t.token_address) {
+                            s.clone()
+                        } else {
+                            let s = get_token_symbol(&t.token_address).await;
+                            seen.insert(t.token_address.clone(), s.clone());
+                            s
+                        };
+                        t.token_symbol = sym;
+                    }
+                    transfers.set(parsed);
                 }
             }
             contract_flag.set(is_contract(&address).await);

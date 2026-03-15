@@ -2,13 +2,13 @@
 use dioxus::prelude::*;
 use crate::router::Route;
 use crate::services::rpc::{
-    get_latest_blocks, get_network_stats, Block, NetworkStats,
-    shorten_hash, shorten_addr, unix_to_age,
+    get_latest_blocks, get_network_stats, get_avg_block_time,
+    Block, NetworkStats, shorten_hash, shorten_addr, unix_to_age,
 };
 use crate::components::loading::{Loading, ErrorBox};
 use wasm_bindgen::JsCast;
 
-const VERSION: &str = "v0.1.3";
+const VERSION: &str = "v0.1.4";
 
 #[component]
 pub fn HomePage() -> Element {
@@ -17,6 +17,7 @@ pub fn HomePage() -> Element {
     let mut loading  = use_signal(|| true);
     let mut error: Signal<Option<String>>        = use_signal(|| None);
     let mut last_updated: Signal<String>         = use_signal(|| "".to_string());
+    let mut avg_block_time: Signal<f64>          = use_signal(|| 0.0);
 
     let do_fetch = move || {
         wasm_bindgen_futures::spawn_local(async move {
@@ -24,6 +25,8 @@ pub fn HomePage() -> Element {
                 get_network_stats(),
                 get_latest_blocks(10)
             );
+            let avg_time = get_avg_block_time(10).await;
+            avg_block_time.set(avg_time);
             match stats_res {
                 Ok(s)  => stats.set(Some(s)),
                 Err(e) => error.set(Some(e)),
@@ -99,7 +102,7 @@ pub fn HomePage() -> Element {
                         StatTile { icon: "〜", label: "NETWORK",
                             value: "● LIVE".to_string(), sub: "rpc.telcoin.network".to_string() }
                     } else {
-                        for _ in 0..5 {
+                        for _ in 0..6 {
                             div { class: "stat-tile stat-tile-skeleton" }
                         }
                     }
@@ -214,10 +217,7 @@ pub fn HomePage() -> Element {
                     }
                 }
 
-                div { class: "version-footer",
-                    span { class: "version-badge", "{VERSION}" }
-                    span { class: "version-text", " · TelScan · Adiri Testnet · Built with Dioxus/WASM" }
-                }
+
             }
         }
     }
@@ -249,19 +249,16 @@ fn StatTile(icon: String, label: String, value: String, sub: String) -> Element 
     let is_live = label == "NETWORK";
     rsx! {
         div { class: "stat-tile",
-            div { class: "stat-tile-icon", "{icon}" }
-            div { class: "stat-tile-body",
-                div { class: "stat-tile-label", "{label}" }
-                if is_live {
-                    div { class: "stat-tile-value live",
-                        span { class: "live-dot", style: "margin-right:4px;" }
-                        "LIVE"
-                    }
-                } else {
-                    div { class: "stat-tile-value", "{value}" }
+            div { class: "stat-tile-label", "{label}" }
+            if is_live {
+                div { class: "stat-tile-value live",
+                    span { class: "live-dot" }
+                    "LIVE"
                 }
-                div { class: "stat-tile-sub", "{sub}" }
+            } else {
+                div { class: "stat-tile-value", "{value}" }
             }
+            div { class: "stat-tile-sub", "{sub}" }
         }
     }
 }
