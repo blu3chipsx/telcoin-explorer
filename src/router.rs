@@ -1,0 +1,31 @@
+use dioxus::prelude::*;
+use crate::components::layout::Layout;
+use crate::pages::{
+    home::HomePage,
+    block::BlockPage,
+    blocks::BlocksPage,
+    transaction::TransactionPage,
+    address::AddressPage,
+    validators::ValidatorsPage,
+    not_found::NotFoundPage,
+};
+
+#[derive(Routable, Clone, PartialEq)]
+pub enum Route {
+    #[layout(Layout)]
+        #[route("/")]
+        HomePage {},
+        #[route("/blocks/:page")]
+        BlocksPage { page: u64 },
+        #[route("/block/:block_number")]
+        BlockPage { block_number: u64 },
+        #[route("/tx/:hash")]
+        TransactionPage { hash: String },
+        #[route("/address/:address")]
+        AddressPage { address: String },
+        #[route("/validators")]
+        ValidatorsPage {},
+    #[end_layout]
+    #[route("/:..segments")]
+    NotFoundPage { segments: Vec<String> },
+}

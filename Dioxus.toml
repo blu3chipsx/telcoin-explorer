@@ -1,0 +1,19 @@
+[application]
+name = "telcoin-explorer"
+default_platform = "web"
+
+[web.app]
+title = "TelScan — Telcoin Network Explorer"
+custom_html = "assets/index.html"
+base_path = "/"
+
+[web.watcher]
+reload_html = true
+watch_path = ["src", "assets"]
+
+[web.resource]
+style = ["/assets/main.css"]
+index_on_404 = true
+
+[web.resource.dev]
+style = ["/assets/main.css"]
