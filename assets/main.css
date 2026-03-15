@@ -1,3 +1,22 @@
+/* ── ANTI-FLASH + SCROLLBAR FIX ─────────────────────────────── */
+html {
+  background: #0B1628 !important;
+  /* Reserves scrollbar space so page never shifts */
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+body {
+  background: #0B1628 !important;
+  color: #e2e8f0;
+  /* Prevent layout shift from scrollbar */
+  overflow-x: hidden;
+}
+/* Style the scrollbar to match the dark theme */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0B1628; }
+::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #2DCEFF; }
+
 /* ============================================================
    TELSCAN — Telcoin Network Explorer
    Etherscan-inspired layout · Telcoin blue brand · Clean dark

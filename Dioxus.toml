@@ -4,7 +4,6 @@ default_platform = "web"
 
 [web.app]
 title = "TelScan — Telcoin Network Explorer"
-custom_html = "assets/index.html"
 base_path = "/"
 
 [web.watcher]
@@ -14,6 +13,9 @@ watch_path = ["src", "assets"]
 [web.resource]
 style = ["/assets/main.css"]
 index_on_404 = true
+# Inline style injected before anything else - prevents white flash
+head = ["<style>html,body{background:#0B1628;}</style>"]
 
 [web.resource.dev]
 style = ["/assets/main.css"]
+head = ["<style>html,body{background:#0B1628;}</style>"]
