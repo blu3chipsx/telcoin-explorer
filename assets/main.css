@@ -2700,3 +2700,118 @@ a.page-btn:hover {
   color: #0f172a !important;
   border-color: #e2eaf2 !important;
 }
+
+/* ══ MOBILE FIXES — COMPREHENSIVE ═══════════════════════════════════ */
+
+/* Stats strip — 2 cols on mobile, 3 cols on tablet */
+@media (max-width: 900px) {
+  .stats-strip-card {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .stat-row:nth-child(3n) { border-right: none !important; }
+  .stat-row:nth-child(n+4) { border-top: 1px solid var(--border) !important; }
+}
+
+@media (max-width: 580px) {
+  .stats-strip-card {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .stat-row { border-right: 1px solid var(--border) !important; }
+  .stat-row:nth-child(even) { border-right: none !important; }
+  .stat-row:nth-child(n+3) { border-top: 1px solid var(--border-subtle) !important; }
+  .stat-row { padding: 12px 10px !important; }
+  .stat-row-label { font-size: 9px !important; letter-spacing: 0.5px !important; }
+  .stat-row-value { font-size: 15px !important; }
+  .stat-row-sub { font-size: 10px !important; }
+  .live-value-inline { font-size: 15px !important; }
+}
+
+/* Footer — centred on mobile */
+@media (max-width: 768px) {
+  .footer-inner {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 12px !important;
+  }
+  .footer-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .footer-links {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+  }
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+/* Hero — mobile search takes full width */
+@media (max-width: 580px) {
+  .hero { padding: 28px 16px 32px !important; }
+  .hero-title { font-size: 20px !important; }
+  .hero-title-accent { font-size: 20px !important; }
+  .hero-search-box { max-width: 100% !important; }
+  .hero-search-input { font-size: 13px !important; padding: 12px 14px !important; }
+  .hero-search-btn { height: 46px !important; padding: 0 14px !important; }
+  .hero-hints { flex-wrap: wrap !important; gap: 6px !important; }
+}
+
+/* Home panels — full width on mobile */
+@media (max-width: 768px) {
+  .dual-col { grid-template-columns: 1fr !important; }
+  .home-content { padding: 14px !important; }
+  .panel-header { padding: 12px 16px !important; }
+  .home-row { padding: 10px 14px !important; gap: 8px !important; }
+  .home-row-id { font-size: 13px !important; }
+  .home-row-age { font-size: 10px !important; }
+  .home-row-label { font-size: 9px !important; }
+  .home-row-addr { font-size: 11px !important; }
+  .home-row-detail { font-size: 10px !important; }
+  .home-row-icon { width: 30px !important; height: 30px !important; }
+}
+
+/* Refresh bar — mobile */
+@media (max-width: 480px) {
+  .refresh-bar { font-size: 10px !important; }
+}
+
+/* Header — mobile */
+@media (max-width: 480px) {
+  .logo-badge { display: none !important; }
+  .header-nav { gap: 6px !important; }
+  .header-nav-faucet { padding: 4px 8px !important; font-size: 11px !important; }
+}
+
+/* Page padding on mobile */
+@media (max-width: 768px) {
+  .page { padding: 14px !important; }
+  .blocks-inner { padding: 14px !important; }
+}
+
+/* Blocks table — mobile already handled, ensure it doesn't overflow */
+@media (max-width: 768px) {
+  .blocks-table-wrap { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
+}
+
+/* Validators page — mobile */
+@media (max-width: 580px) {
+  .validator-info-grid { grid-template-columns: 1fr !important; }
+  .validator-types-grid { grid-template-columns: 1fr !important; }
+  .epoch-info-grid { grid-template-columns: 1fr 1fr !important; }
+  .page-title { font-size: 20px !important; }
+  .page-title-row { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+}
+
+/* Detail pages — mobile */
+@media (max-width: 580px) {
+  .detail-row { grid-template-columns: 100px 1fr !important; }
+  .detail-key { font-size: 10px !important; padding: 10px 10px !important; }
+  .detail-val { font-size: 11px !important; padding: 10px 10px !important; word-break: break-all !important; }
+}
