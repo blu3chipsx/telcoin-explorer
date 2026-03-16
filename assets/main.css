@@ -2905,3 +2905,103 @@ a.page-btn:hover {
   justify-content: center !important;
   gap: 10px !important;
 }
+
+/* ══ TYPOGRAPHY SCALE UP ═════════════════════════════════════════════ */
+
+/* Base font size bump */
+body { font-size: 15px !important; }
+
+/* Home rows — bigger, more breathing room */
+.home-row {
+  padding: 16px 20px !important;
+  gap: 16px !important;
+}
+.home-row-id {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+.home-row-age {
+  font-size: 13px !important;
+  margin-top: 3px !important;
+}
+.home-row-label {
+  font-size: 11px !important;
+  letter-spacing: 0.6px !important;
+}
+.home-row-addr {
+  font-size: 14px !important;
+  margin-top: 2px !important;
+}
+.home-row-detail {
+  font-size: 12px !important;
+  margin-top: 2px !important;
+}
+.home-row-icon {
+  width: 40px !important;
+  height: 40px !important;
+}
+.block-row-icon::after {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Panel headers — bigger title */
+.panel-title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+.panel-header {
+  padding: 18px 20px !important;
+}
+
+/* Panel footer */
+.panel-view-all-footer {
+  font-size: 13px !important;
+  padding: 14px 20px !important;
+}
+
+/* Tx badge */
+.tx-badge {
+  font-size: 12px !important;
+  padding: 4px 10px !important;
+}
+
+/* Panel empty state */
+.panel-empty {
+  font-size: 14px !important;
+  padding: 48px 20px !important;
+}
+
+/* Refresh bar */
+.refresh-bar {
+  font-size: 13px !important;
+  padding: 12px 0 18px !important;
+}
+
+/* Hash cells globally bigger */
+.hash-cell {
+  font-size: 14px !important;
+}
+.hash-cell.small {
+  font-size: 13px !important;
+}
+
+/* General page text */
+.page-title { font-size: 22px !important; }
+.detail-key { font-size: 13px !important; }
+.detail-val { font-size: 14px !important; }
+
+/* Blocks table */
+.blocks-table th { font-size: 12px !important; }
+.blocks-table td { font-size: 13px !important; }
+
+/* Stat rows already sized, just confirm sub is readable */
+.stat-row-sub { font-size: 12px !important; }
+
+/* Header nav */
+.header-nav a { font-size: 14px !important; }
+
+/* Footer */
+.footer-link { font-size: 13px !important; }
+.footer-sub  { font-size: 13px !important; }
+.footer-brand { font-size: 15px !important; }
