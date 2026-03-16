@@ -2815,3 +2815,93 @@ a.page-btn:hover {
   .detail-key { font-size: 10px !important; padding: 10px 10px !important; }
   .detail-val { font-size: 11px !important; padding: 10px 10px !important; word-break: break-all !important; }
 }
+
+/* ══ STAT ROW ICONS ══════════════════════════════════════════════════ */
+
+.stat-row {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-align: left !important;
+  padding: 14px 16px !important;
+}
+
+.stat-icon-wrap {
+  flex-shrink: 0;
+  width: 36px; height: 36px;
+  background: var(--tel-blue-dim);
+  border: 1px solid var(--tel-blue-border);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+}
+.stat-icon { color: var(--tel-blue); }
+
+.stat-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.stat-row-label {
+  text-align: left !important;
+  font-size: 10px !important;
+}
+.stat-row-value {
+  text-align: left !important;
+  font-size: 17px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stat-row-sub {
+  text-align: left !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Live row icon */
+.live-row .stat-icon-wrap {
+  background: rgba(34,197,94,0.1);
+  border-color: rgba(34,197,94,0.2);
+}
+.live-value-inline {
+  justify-content: flex-start !important;
+  font-size: 17px !important;
+}
+
+/* Panel header icons */
+.panel-header svg {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+.panel-header {
+  gap: 10px !important;
+}
+
+/* Mobile: stack icon above text in stat rows */
+@media (max-width: 580px) {
+  .stat-row {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 12px 8px !important;
+    gap: 6px !important;
+  }
+  .stat-icon-wrap { width: 30px; height: 30px; border-radius: 7px; }
+  .stat-icon { width: 14px !important; height: 14px !important; }
+  .stat-row-body { align-items: center !important; }
+  .stat-row-label { text-align: center !important; }
+  .stat-row-value { text-align: center !important; font-size: 14px !important; }
+  .stat-row-sub { text-align: center !important; }
+  .live-value-inline { justify-content: center !important; }
+}
+
+/* ══ PANEL HEADER — better icon alignment ════════════════════════════ */
+.panel-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+}

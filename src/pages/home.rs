@@ -135,12 +135,19 @@ pub fn HomePage() -> Element {
                             sub: Some("Last 10 blocks".to_string()) }
                         div { class: "stats-divider" }
                         div { class: "stat-row live-row",
-                            span { class: "stat-row-label", "NETWORK" }
-                            span { class: "stat-row-value live-value-inline",
-                                span { class: "live-dot" }
-                                "LIVE"
+                            div { class: "stat-icon-wrap",
+                                svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none", stroke:"#22c55e", stroke_width:"1.5", stroke_linecap:"round", stroke_linejoin:"round",
+                                    path { d:"M22 12h-4l-3 9L9 3l-3 9H2" }
+                                }
                             }
-                            span { class: "stat-row-sub", "rpc.telcoin.network" }
+                            div { class: "stat-row-body",
+                                span { class: "stat-row-label", "NETWORK" }
+                                span { class: "stat-row-value live-value-inline",
+                                    span { class: "live-dot" }
+                                    "LIVE"
+                                }
+                                span { class: "stat-row-sub", "rpc.telcoin.network" }
+                            }
                         }
                     } else {
                         div { class: "stats-loading", "Loading network stats…" }
@@ -164,7 +171,9 @@ pub fn HomePage() -> Element {
                     // Latest Blocks panel
                     div { class: "panel",
                         div { class: "panel-header",
-                            span { class: "panel-icon-circ" }
+                            svg { width:"18", height:"18", view_box:"0 0 24 24", fill:"none", stroke:"var(--tel-blue)", stroke_width:"2", stroke_linecap:"round", stroke_linejoin:"round",
+                                path { d:"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" }
+                            }
                             span { class: "panel-title", "Latest Blocks" }
                         }
                         if *loading.read() {
@@ -218,7 +227,13 @@ pub fn HomePage() -> Element {
                     // Latest Transactions panel
                     div { class: "panel",
                         div { class: "panel-header",
-                            span { class: "panel-icon-doc" }
+                            svg { width:"18", height:"18", view_box:"0 0 24 24", fill:"none", stroke:"var(--tel-blue)", stroke_width:"2", stroke_linecap:"round", stroke_linejoin:"round",
+                                path { d:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" }
+                                path { d:"M14 2v6h6" }
+                                path { d:"M16 13H8" }
+                                path { d:"M16 17H8" }
+                                path { d:"M10 9H8" }
+                            }
                             span { class: "panel-title", "Latest Transactions" }
                         }
                         if *loading.read() {
@@ -265,12 +280,57 @@ pub fn HomePage() -> Element {
 
 #[component]
 fn StatRow(label: String, value: String, sub: Option<String>) -> Element {
+    let icon = match label.as_str() {
+        "LATEST BLOCK" => rsx! {
+            svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none", stroke:"currentColor", stroke_width:"1.5", stroke_linecap:"round", stroke_linejoin:"round", class:"stat-icon",
+                path { d:"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" }
+            }
+        },
+        "GAS PRICE" => rsx! {
+            svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none", stroke:"currentColor", stroke_width:"1.5", stroke_linecap:"round", stroke_linejoin:"round", class:"stat-icon",
+                path { d:"M3 22V8l9-6 9 6v14" }
+                path { d:"M9 22V12h6v10" }
+            }
+        },
+        "TRANSACTIONS" => rsx! {
+            svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none", stroke:"currentColor", stroke_width:"1.5", stroke_linecap:"round", stroke_linejoin:"round", class:"stat-icon",
+                path { d:"M8 3H5a2 2 0 0 0-2 2v3" }
+                path { d:"M21 8V5a2 2 0 0 0-2-2h-3" }
+                path { d:"M3 16v3a2 2 0 0 0 2 2h3" }
+                path { d:"M16 21h3a2 2 0 0 0 2-2v-3" }
+                path { d:"M7 12h10" }
+                path { d:"m12 7 5 5-5 5" }
+            }
+        },
+        "CHAIN ID" => rsx! {
+            svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none", stroke:"currentColor", stroke_width:"1.5", stroke_linecap:"round", stroke_linejoin:"round", class:"stat-icon",
+                path { d:"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" }
+                path { d:"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" }
+            }
+        },
+        "BLOCK TIME" => rsx! {
+            svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none", stroke:"currentColor", stroke_width:"1.5", stroke_linecap:"round", stroke_linejoin:"round", class:"stat-icon",
+                circle { cx:"12", cy:"12", r:"10" }
+                path { d:"M12 6v6l4 2" }
+            }
+        },
+        _ => rsx! {
+            svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none", stroke:"currentColor", stroke_width:"1.5", stroke_linecap:"round", stroke_linejoin:"round", class:"stat-icon",
+                circle { cx:"12", cy:"12", r:"10" }
+                path { d:"M12 8v4" }
+                path { d:"M12 16h.01" }
+            }
+        },
+    };
     rsx! {
         div { class: "stat-row",
-            span { class: "stat-row-label", "{label}" }
-            span { class: "stat-row-value", "{value}" }
-            if let Some(s) = sub {
-                span { class: "stat-row-sub", "{s}" }
+            div { class: "stat-icon-wrap", {icon} }
+            div { class: "stat-row-body",
+                span { class: "stat-row-label", "{label}" }
+                span { class: "stat-row-value", "{value}" }
+                if let Some(s) = sub {
+                    span { class: "stat-row-sub", "{s}" }
+                }
             }
         }
     }
