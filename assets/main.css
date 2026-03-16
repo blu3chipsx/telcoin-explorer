@@ -2532,3 +2532,171 @@ a.page-btn:hover {
 .stat-row:not(:last-child), .live-row:not(:last-child) {
   border-right: 1px solid var(--border) !important;
 }
+
+/* ══ LIGHT THEME — COMPLETE REWRITE ═════════════════════════════════ */
+
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg-base:        #f0f4f8;
+  --bg-surface:     #e8edf2;
+  --bg-card:        #ffffff;
+  --bg-input:       #ffffff;
+
+  /* Text */
+  --text-primary:   #0f172a;
+  --text-secondary: #1e3a5f;
+  --text-muted:     #64748b;
+
+  /* Borders */
+  --border:         #d1dce8;
+  --border-subtle:  #e2eaf2;
+  --border-mid:     #94a3b8;
+
+  /* Accent — keep Telcoin brand but slightly deeper for light bg */
+  --tel-blue:        #0284c7;
+  --tel-blue-dim:    rgba(2,132,199,0.08);
+  --tel-blue-border: rgba(2,132,199,0.25);
+  --accent-green:    #16a34a;
+
+  /* Shadows */
+  --shadow-card: 0 1px 4px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+}
+
+/* Header */
+[data-theme="light"] .header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #d1dce8 !important;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06) !important;
+}
+[data-theme="light"] .logo-name { color: #0f172a !important; }
+[data-theme="light"] .logo-badge {
+  background: rgba(2,132,199,0.1) !important;
+  color: #0284c7 !important;
+  border-color: rgba(2,132,199,0.2) !important;
+}
+[data-theme="light"] .header-nav a { color: #334155 !important; }
+[data-theme="light"] .header-nav a:hover { color: #0284c7 !important; }
+[data-theme="light"] .header-nav-faucet {
+  border-color: #0284c7 !important;
+  color: #0284c7 !important;
+}
+[data-theme="light"] .theme-toggle {
+  background: #f0f4f8 !important;
+  border-color: #d1dce8 !important;
+  color: #334155 !important;
+}
+
+/* Hero — keep dark, it looks great */
+[data-theme="light"] .hero {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(2,132,199,0.15) 0%, transparent 70%),
+    linear-gradient(180deg, #0a1628 0%, #0f2040 60%, #1a3a6b 100%) !important;
+}
+[data-theme="light"] .hero-title { color: #ffffff !important; }
+[data-theme="light"] .hero-title-accent { color: #38bdf8 !important; }
+[data-theme="light"] .hint-tag {
+  background: rgba(56,189,248,0.1) !important;
+  border-color: rgba(56,189,248,0.3) !important;
+  color: #38bdf8 !important;
+}
+
+/* Stats strip */
+[data-theme="light"] .stats-strip-card {
+  background: #ffffff !important;
+  border-color: #d1dce8 !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+}
+[data-theme="light"] .stat-row { border-right-color: #e2eaf2 !important; }
+[data-theme="light"] .stat-row:hover { background: #f8fafc !important; }
+[data-theme="light"] .stat-row-label { color: #64748b !important; }
+[data-theme="light"] .stat-row-value { color: #0f172a !important; }
+[data-theme="light"] .stat-row-sub { color: #94a3b8 !important; }
+[data-theme="light"] .live-value-inline { color: #16a34a !important; }
+[data-theme="light"] .live-dot { background: #16a34a !important; box-shadow: 0 0 6px #16a34a !important; }
+
+/* Panels */
+[data-theme="light"] .panel {
+  background: #ffffff !important;
+  border-color: #d1dce8 !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+}
+[data-theme="light"] .panel::before {
+  background: linear-gradient(90deg, #0284c7, transparent) !important;
+}
+[data-theme="light"] .panel-header {
+  background: #f8fafc !important;
+  border-bottom-color: #e2eaf2 !important;
+}
+[data-theme="light"] .panel-title { color: #0f172a !important; }
+
+/* Block rows */
+[data-theme="light"] .home-row:hover { background: #f0f7ff !important; }
+[data-theme="light"] .home-row { border-bottom-color: #e8edf2 !important; }
+[data-theme="light"] .home-row-age { color: #64748b !important; }
+[data-theme="light"] .home-row-label { color: #94a3b8 !important; }
+[data-theme="light"] .home-row-detail { color: #64748b !important; }
+[data-theme="light"] .home-row-icon { background: #f0f4f8 !important; border-color: #d1dce8 !important; }
+[data-theme="light"] .block-row-icon::after { background: #0284c7 !important; }
+
+/* Hash cells */
+[data-theme="light"] .hash-cell { color: #0284c7 !important; }
+[data-theme="light"] .hash-cell:hover { color: #0369a1 !important; text-shadow: none !important; }
+
+/* Tx badge */
+[data-theme="light"] .tx-badge {
+  background: rgba(2,132,199,0.08) !important;
+  border-color: rgba(2,132,199,0.2) !important;
+  color: #0284c7 !important;
+}
+
+/* Page background */
+[data-theme="light"] body { background: #f0f4f8 !important; }
+[data-theme="light"] .app-wrap { background: #f0f4f8 !important; }
+
+/* Refresh bar */
+[data-theme="light"] .refresh-text { color: #64748b !important; }
+[data-theme="light"] .refresh-time { color: #334155 !important; }
+
+/* Footer */
+[data-theme="light"] .site-footer {
+  background: #ffffff !important;
+  border-top-color: #d1dce8 !important;
+}
+[data-theme="light"] .footer-brand { color: #0f172a !important; }
+[data-theme="light"] .footer-link { color: #334155 !important; }
+[data-theme="light"] .footer-link:hover { color: #0284c7 !important; }
+[data-theme="light"] .footer-copy { color: #94a3b8 !important; }
+[data-theme="light"] .footer-version {
+  background: rgba(2,132,199,0.08) !important;
+  border-color: rgba(2,132,199,0.2) !important;
+  color: #0284c7 !important;
+}
+
+/* Blocks table */
+[data-theme="light"] .blocks-table-wrap {
+  background: #ffffff !important;
+  border-color: #d1dce8 !important;
+}
+[data-theme="light"] .blocks-table th {
+  background: #f8fafc !important;
+  color: #64748b !important;
+  border-bottom-color: #e2eaf2 !important;
+}
+[data-theme="light"] .blocks-table td { border-bottom-color: #f0f4f8 !important; }
+[data-theme="light"] .blocks-table tr:hover td { background: #f0f7ff !important; }
+
+/* Detail pages */
+[data-theme="light"] .detail-panel {
+  background: #ffffff !important;
+  border-color: #d1dce8 !important;
+}
+[data-theme="light"] .detail-key {
+  background: #f8fafc !important;
+  color: #64748b !important;
+  border-color: #e2eaf2 !important;
+}
+[data-theme="light"] .detail-val {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #e2eaf2 !important;
+}
