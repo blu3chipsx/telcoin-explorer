@@ -3,11 +3,11 @@ use dioxus::prelude::*;
 use crate::router::Route;
 use crate::services::rpc::{
     get_latest_blocks, get_network_stats, get_avg_block_time,
-    Block, NetworkStats, shorten_hash, shorten_addr, unix_to_age,
+    subscribe_new_blocks, Block, NetworkStats, shorten_hash, shorten_addr, unix_to_age,
 };
 use crate::components::loading::{Loading, ErrorBox};
 
-const VERSION: &str = "v0.1.5";
+const VERSION: &str = "v0.1.6";
 
 #[component]
 pub fn HomePage() -> Element {
@@ -111,29 +111,6 @@ pub fn HomePage() -> Element {
             div { class: "home-content",
                 div { class: "stats-strip-card",
                     if let Some(s) = stats.read().as_ref() {
-                        StatRow { label: "LATEST BLOCK",
-                            value: format!("#{}", s.latest_block),
-                            sub: Some("Telcoin Network".to_string()) }
-                        div { class: "stats-divider" }
-                        StatRow { label: "GAS PRICE",
-                            value: format!("{:.2} Gwei", s.gas_price_gwei),
-                            sub: Some("Base fee".to_string()) }
-                        div { class: "stats-divider" }
-                        StatRow { label: "TRANSACTIONS",
-                            value: format!("{}", total_txs),
-                            sub: Some("Latest 10 blocks".to_string()) }
-                        div { class: "stats-divider" }
-                        StatRow { label: "CHAIN ID",
-                            value: format!("{}", s.chain_id),
-                            sub: Some("Adiri Testnet".to_string()) }
-                        div { class: "stats-divider" }
-                        StatRow { label: "BLOCK TIME",
-                            value: {
-                                let t = *avg_block_time.read();
-                                if t > 0.0 { format!("{:.1}s avg", t) } else { "— avg".to_string() }
-                            },
-                            sub: Some("Last 10 blocks".to_string()) }
-                        div { class: "stats-divider" }
                         div { class: "stat-row live-row",
                             div { class: "stat-icon-wrap",
                                 svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none", stroke:"#22c55e", stroke_width:"1.5", stroke_linecap:"round", stroke_linejoin:"round",
@@ -146,9 +123,38 @@ pub fn HomePage() -> Element {
                                     span { class: "live-dot" }
                                     "LIVE"
                                 }
-                                span { class: "stat-row-sub", "rpc.telcoin.network" }
+                                span { class: "stat-row-sub",
+                                    if !last_updated.read().is_empty() {
+                                        { format!("Updated {}", last_updated.read()) }
+                                    } else {
+                                        "rpc.telcoin.network"
+                                    }
+                                }
                             }
                         }
+                        div { class: "stats-divider" }
+                        StatRow { label: "LATEST BLOCK",
+                            value: format!("#{}", s.latest_block),
+                            sub: Some("Telcoin Network".to_string()) }
+                        div { class: "stats-divider" }
+                        StatRow { label: "GAS PRICE",
+                            value: format!("{:.2} Gwei", s.gas_price_gwei),
+                            sub: Some("Base fee".to_string()) }
+                        div { class: "stats-divider" }
+                        StatRow { label: "TRANSACTIONS",
+                            value: format!("{}", total_txs),
+                            sub: Some("Latest 10 blocks".to_string()) }
+                        div { class: "stats-divider" }
+                        StatRow { label: "BLOCK TIME",
+                            value: {
+                                let t = *avg_block_time.read();
+                                if t > 0.0 { format!("{:.1}s avg", t) } else { "—".to_string() }
+                            },
+                            sub: Some("Last 10 blocks".to_string()) }
+                        div { class: "stats-divider" }
+                        StatRow { label: "CHAIN ID",
+                            value: format!("{}", s.chain_id),
+                            sub: Some("Adiri Testnet".to_string()) }
                     } else {
                         div { class: "stats-loading", "Loading network stats…" }
                     }
@@ -156,17 +162,7 @@ pub fn HomePage() -> Element {
 
                 // ── Panels ──────────────────────────────────────────
 
-                div { class: "refresh-bar",
-                    span { class: "refresh-dot" }
-                    span { class: "refresh-text", "Auto-refreshing every 30s" }
-                    if !last_updated.read().is_empty() {
-                        span { class: "refresh-time",
-                            " · Last updated {last_updated}"
-                        }
-                    }
-                }
-
-                div { class: "dual-col",
+div { class: "dual-col",
 
                     // Latest Blocks panel
                     div { class: "panel",

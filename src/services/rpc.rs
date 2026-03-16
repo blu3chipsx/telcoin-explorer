@@ -589,3 +589,55 @@ pub async fn get_avg_block_time(sample: u64) -> f64 {
     if diffs.is_empty() { return 0.0; }
     diffs.iter().sum::<f64>() / diffs.len() as f64
 }
+
+// ─── WebSocket Real-time Subscription ─────────────────────────────────────
+// Connects to the Telcoin WS RPC and subscribes to newHeads
+// Returns a receiver that gets the block number whenever a new block arrives
+
+use futures::{SinkExt, StreamExt};
+use gloo_net::websocket::{Message, futures::WebSocket};
+
+const WS_RPC: &str = "wss://rpc.telcoin.network";
+
+pub async fn subscribe_new_blocks(
+    mut on_block: impl FnMut(u64) + 'static,
+) {
+    let ws = match WebSocket::open(WS_RPC) {
+        Ok(ws) => ws,
+        Err(_) => {
+            // WS failed — fall back silently, caller handles polling
+            return;
+        }
+    };
+
+    let (mut write, mut read) = ws.split();
+
+    // Send eth_subscribe request
+    let sub_msg = r#"{"jsonrpc":"2.0","id":1,"method":"eth_subscribe","params":["newHeads"]}"#;
+    let _ = write.send(Message::Text(sub_msg.to_string())).await;
+
+    // Listen for incoming messages
+    while let Some(msg) = read.next().await {
+        match msg {
+            Ok(Message::Text(text)) => {
+                // Parse subscription notification
+                if let Ok(val) = serde_json::from_str::<serde_json::Value>(&text) {
+                    // subscription confirmation — ignore
+                    if val.get("id").is_some() { continue; }
+                    // new block notification
+                    if let Some(number_hex) = val
+                        .get("params")
+                        .and_then(|p| p.get("result"))
+                        .and_then(|r| r.get("number"))
+                        .and_then(|n| n.as_str())
+                    {
+                        let block_num = hex_to_u64(number_hex);
+                        on_block(block_num);
+                    }
+                }
+            }
+            Err(_) => break,
+            _ => {}
+        }
+    }
+}

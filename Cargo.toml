@@ -17,8 +17,12 @@ web-sys = { version = "0.3", features = ["Window",
     "Navigator",
     "Clipboard",
     "Location",
-    "HtmlInputElement", "console"] }
-gloo-net = { version = "0.6", features = ["http"] }
+    "HtmlInputElement",
+    "WebSocket",
+    "MessageEvent",
+    "BinaryType",
+    "CloseEvent", "console"] }
+gloo-net = { version = "0.6", features = ["http", "websocket"] }
 gloo-timers = { version = "0.3", features = ["futures"] }
 futures = "0.3"
 log = "0.4"

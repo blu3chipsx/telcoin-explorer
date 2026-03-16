@@ -35,7 +35,7 @@ pub fn Footer() -> Element {
 
                 }
                 div { class: "footer-right",
-                    span { class: "footer-version", "v0.1.5" }
+                    span { class: "footer-version", "v0.1.6" }
                     span { class: "footer-copy", "© 2025 Telcoin" }
                 }
             }
