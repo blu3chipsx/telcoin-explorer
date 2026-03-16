@@ -6,9 +6,8 @@ use crate::services::rpc::{
     Block, NetworkStats, shorten_hash, shorten_addr, unix_to_age,
 };
 use crate::components::loading::{Loading, ErrorBox};
-use wasm_bindgen::JsCast;
 
-const VERSION: &str = "v0.1.4";
+const VERSION: &str = "v0.1.5";
 
 #[component]
 pub fn HomePage() -> Element {
@@ -62,61 +61,93 @@ pub fn HomePage() -> Element {
     rsx! {
         div {
 
-            // ── Hero ──────────────────────────────────────────────────
+
+
+            // ── Hero (Etherscan-style) ────────────────────────────────
             div { class: "hero",
                 div { class: "hero-inner",
-                    h1 { class: "hero-title", "The Telcoin Network Explorer" }
-                    p  { class: "hero-sub", "Search blocks, transactions, and addresses on the Telcoin blockchain" }
-                    div { class: "search-bar",
+                    div { class: "hero-text",
+                        h1 { class: "hero-title",
+                            "The Telcoin Network"
+                            br {}
+                            span { class: "hero-title-accent", "Blockchain Explorer" }
+                        }
+                    }
+                    div { class: "hero-search-box",
                         input {
-                            class: "search-input",
-                            placeholder: "Search by Address / Txn Hash / Block Number",
+                            class: "hero-search-input",
                             id: "home-search",
+                            placeholder: "Search by Address / Txn Hash / Block Number",
                             onkeydown: move |e: Event<KeyboardData>| {
-                                if e.key() == Key::Enter {
-                                    run_search();
-                                }
+                                if e.key() == Key::Enter { run_search(); }
                             }
                         }
                         button {
-                            class: "search-btn",
+                            class: "hero-search-btn",
                             onclick: move |_: Event<MouseData>| { run_search(); },
-                            "Search"
+                            svg {
+                                width: "18", height: "18",
+                                view_box: "0 0 24 24",
+                                fill: "none",
+                                stroke: "currentColor",
+                                stroke_width: "2.5",
+                                stroke_linecap: "round",
+                                stroke_linejoin: "round",
+                                circle { cx: "11", cy: "11", r: "8" }
+                                path { d: "m21 21-4.35-4.35" }
+                            }
                         }
+                    }
+                    div { class: "hero-hints",
+                        span { "Supported: " }
+                        span { class: "hint-tag", "Address" }
+                        span { class: "hint-tag", "Transaction" }
+                        span { class: "hint-tag", "Block" }
                     }
                 }
             }
 
-            // ── Stats ─────────────────────────────────────────────────
-            div { class: "stats-band",
-                div { class: "stats-grid-centered",
+            // ── Stats + Panels (all inside one width-constrained container) ──
+            div { class: "home-content",
+                div { class: "stats-strip-card",
                     if let Some(s) = stats.read().as_ref() {
-                        StatTile { icon: "⬡", label: "LATEST BLOCK",
-                            value: format!("#{}", s.latest_block), sub: "Telcoin Network".to_string() }
-                        StatTile { icon: "⛽", label: "GAS PRICE",
-                            value: format!("{:.2}", s.gas_price_gwei), sub: "Gwei".to_string() }
-                        StatTile { icon: "↔", label: "TRANSACTIONS",
-                            value: format!("{}", total_txs), sub: "In latest 10 blocks".to_string() }
-                        StatTile { icon: "🔗", label: "CHAIN ID",
-                            value: format!("{}", s.chain_id), sub: "Adiri Testnet".to_string() }
-                        StatTile { icon: "⏱", label: "BLOCK TIME",
+                        StatRow { label: "LATEST BLOCK",
+                            value: format!("#{}", s.latest_block),
+                            sub: Some("Telcoin Network".to_string()) }
+                        div { class: "stats-divider" }
+                        StatRow { label: "GAS PRICE",
+                            value: format!("{:.2} Gwei", s.gas_price_gwei),
+                            sub: Some("Base fee".to_string()) }
+                        div { class: "stats-divider" }
+                        StatRow { label: "TRANSACTIONS",
+                            value: format!("{}", total_txs),
+                            sub: Some("Latest 10 blocks".to_string()) }
+                        div { class: "stats-divider" }
+                        StatRow { label: "CHAIN ID",
+                            value: format!("{}", s.chain_id),
+                            sub: Some("Adiri Testnet".to_string()) }
+                        div { class: "stats-divider" }
+                        StatRow { label: "BLOCK TIME",
                             value: {
                                 let t = *avg_block_time.read();
-                                if t > 0.0 { format!("{:.1}s", t) } else { "—".to_string() }
+                                if t > 0.0 { format!("{:.1}s avg", t) } else { "— avg".to_string() }
                             },
-                            sub: "Avg last 10 blocks".to_string() }
-                        StatTile { icon: "〜", label: "NETWORK",
-                            value: "● LIVE".to_string(), sub: "rpc.telcoin.network".to_string() }
-                    } else {
-                        for _ in 0..6 {
-                            div { class: "stat-tile stat-tile-skeleton" }
+                            sub: Some("Last 10 blocks".to_string()) }
+                        div { class: "stats-divider" }
+                        div { class: "stat-row live-row",
+                            span { class: "stat-row-label", "NETWORK" }
+                            span { class: "stat-row-value live-value-inline",
+                                span { class: "live-dot" }
+                                "LIVE"
+                            }
+                            span { class: "stat-row-sub", "rpc.telcoin.network" }
                         }
+                    } else {
+                        div { class: "stats-loading", "Loading network stats…" }
                     }
                 }
-            }
 
-            // ── Panels ────────────────────────────────────────────────
-            div { class: "home-content",
+                // ── Panels ──────────────────────────────────────────
 
                 div { class: "refresh-bar",
                     span { class: "refresh-dot" }
@@ -230,13 +261,29 @@ pub fn HomePage() -> Element {
     }
 }
 
+
+
+#[component]
+fn StatRow(label: String, value: String, sub: Option<String>) -> Element {
+    rsx! {
+        div { class: "stat-row",
+            span { class: "stat-row-label", "{label}" }
+            span { class: "stat-row-value", "{value}" }
+            if let Some(s) = sub {
+                span { class: "stat-row-sub", "{s}" }
+            }
+        }
+    }
+}
+
 fn run_search() {
+    use wasm_bindgen::JsCast;
     let window = web_sys::window().unwrap();
     let doc = window.document().unwrap();
     if let Some(el) = doc.get_element_by_id("home-search") {
         let input: web_sys::HtmlInputElement = el.dyn_into().unwrap();
         let q = input.value();
-        let q = q.trim();
+        let q = q.trim().to_string();
         if q.is_empty() { return; }
         let url = if q.len() == 66 && q.starts_with("0x") {
             format!("/tx/{}", q)
@@ -248,24 +295,5 @@ fn run_search() {
             return;
         };
         window.location().set_href(&url).ok();
-    }
-}
-
-#[component]
-fn StatTile(icon: String, label: String, value: String, sub: String) -> Element {
-    let is_live = label == "NETWORK";
-    rsx! {
-        div { class: "stat-tile",
-            div { class: "stat-tile-label", "{label}" }
-            if is_live {
-                div { class: "stat-tile-value live",
-                    span { class: "live-dot" }
-                    "LIVE"
-                }
-            } else {
-                div { class: "stat-tile-value", "{value}" }
-            }
-            div { class: "stat-tile-sub", "{sub}" }
-        }
     }
 }

@@ -2120,3 +2120,415 @@ a.page-btn:hover {
   .blocks-inner { padding: 12px 10px !important; }
   .blocks-page-header { margin-bottom: 12px !important; }
 }
+
+/* ══ NAV SEARCH BAR ══════════════════════════════════════════════════ */
+
+.header-inner {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 0 24px !important;
+  height: 60px !important;
+}
+
+.nav-search-wrap {
+  flex: 1;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border-mid);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin: 0 auto;
+}
+.nav-search-wrap:focus-within {
+  border-color: var(--tel-blue);
+  box-shadow: 0 0 0 3px rgba(45,206,255,0.12);
+}
+.nav-search-input {
+  flex: 1;
+  background: transparent;
+  border: none !important;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 13px;
+  padding: 9px 14px;
+  min-width: 0;
+}
+.nav-search-input::placeholder { color: var(--text-muted); }
+.nav-search-btn {
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0 12px;
+  height: 38px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s, background 0.15s;
+}
+.nav-search-btn:hover {
+  color: var(--tel-blue);
+  background: var(--tel-blue-dim);
+}
+
+/* Remove old hero styles that add padding */
+.hero { display: none !important; }
+
+/* Stats band no longer needs top padding from hero */
+.stats-band {
+  padding-top: 28px !important;
+  padding-bottom: 28px !important;
+}
+
+/* Home content top padding */
+.home-content {
+  padding-top: 20px !important;
+}
+
+/* Mobile: hide nav search, or make it smaller */
+@media (max-width: 768px) {
+  .nav-search-wrap {
+    max-width: 200px;
+  }
+  .nav-search-input {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .header-inner { padding: 0 14px !important; gap: 10px !important; }
+}
+@media (max-width: 480px) {
+  /* On very small screens collapse search to icon only */
+  .nav-search-input { display: none; }
+  .nav-search-wrap {
+    max-width: 40px;
+    border-radius: 8px;
+  }
+  .nav-search-btn { border-left: none; }
+}
+
+/* ══ HERO — ETHERSCAN STYLE ══════════════════════════════════════════ */
+
+.hero {
+  display: block !important;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(45,206,255,0.08) 0%, transparent 70%),
+    linear-gradient(180deg, #050f20 0%, #0a1628 60%, var(--bg-surface) 100%) !important;
+  padding: 48px 28px 52px !important;
+  border-bottom: 1px solid var(--border) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle topographic/grid pattern overlay */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(45,206,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45,206,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.hero-inner {
+  max-width: 860px !important;
+  margin: 0 auto !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Title */
+.hero-title {
+  font-size: 32px !important;
+  font-weight: 800 !important;
+  color: #fff !important;
+  line-height: 1.2 !important;
+  margin-bottom: 28px !important;
+  text-align: left !important;
+}
+.hero-title-accent {
+  color: var(--tel-blue) !important;
+  display: inline;
+}
+
+/* Search box */
+.hero-search-box {
+  display: flex !important;
+  align-items: center !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1.5px solid rgba(255,255,255,0.12) !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+  backdrop-filter: blur(8px) !important;
+}
+.hero-search-box:focus-within {
+  border-color: var(--tel-blue) !important;
+  box-shadow: 0 0 0 4px rgba(45,206,255,0.12),
+              0 0 30px rgba(45,206,255,0.08) !important;
+  background: rgba(255,255,255,0.08) !important;
+}
+.hero-search-input {
+  flex: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  padding: 16px 20px !important;
+  min-width: 0 !important;
+}
+.hero-search-input::placeholder {
+  color: rgba(255,255,255,0.35) !important;
+}
+.hero-search-btn {
+  flex-shrink: 0 !important;
+  background: var(--tel-blue) !important;
+  border: none !important;
+  border-radius: 0 10px 10px 0 !important;
+  color: #000 !important;
+  padding: 0 22px !important;
+  height: 54px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background 0.15s !important;
+}
+.hero-search-btn:hover { background: #5AE0FF !important; }
+
+/* Hint tags */
+.hero-hints {
+  margin-top: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 12px !important;
+  color: rgba(255,255,255,0.35) !important;
+}
+.hint-tag {
+  background: rgba(45,206,255,0.08) !important;
+  border: 1px solid rgba(45,206,255,0.2) !important;
+  color: rgba(45,206,255,0.7) !important;
+  padding: 2px 10px !important;
+  border-radius: 20px !important;
+  font-size: 11px !important;
+}
+
+/* Stats band sits flush below hero */
+.stats-band {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero { padding: 32px 16px 36px !important; }
+  .hero-title { font-size: 22px !important; margin-bottom: 20px !important; }
+  .hero-search-input { font-size: 13px !important; padding: 13px 14px !important; }
+  .hero-search-btn { height: 46px !important; padding: 0 16px !important; }
+}
+
+/* ══ UNIFIED WIDTH — everything aligns to home-content width ════════ */
+
+/* Single width constant for the whole page */
+:root { --page-width: 1400px; --page-pad: 28px; }
+
+/* Hero inner matches page width */
+.hero-inner {
+  max-width: var(--page-width) !important;
+  margin: 0 auto !important;
+  padding: 0 var(--page-pad) !important;
+  width: 100% !important;
+}
+
+/* Stats grid matches page width */
+.stats-band { padding-left: 0 !important; padding-right: 0 !important; }
+.stats-grid-centered {
+  max-width: var(--page-width) !important;
+  margin: 0 auto !important;
+  padding: 0 var(--page-pad) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Home content already uses home-content class */
+.home-content {
+  max-width: var(--page-width) !important;
+  margin: 0 auto !important;
+  padding-left: var(--page-pad) !important;
+  padding-right: var(--page-pad) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Hero text left aligned */
+.hero-title { text-align: left !important; }
+.hero-search-box { max-width: 720px !important; }
+.hero-hints { justify-content: flex-start !important; }
+
+/* Mobile */
+@media (max-width: 768px) {
+  :root { --page-pad: 14px; }
+  .hero-search-box { max-width: 100% !important; }
+}
+
+/* ══ COMPACT STATS STRIP ═════════════════════════════════════════════ */
+
+.stats-strip-outer {
+  padding: 16px var(--page-pad) !important;
+  background: var(--bg-surface) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.stats-strip-card {
+  max-width: var(--page-width) !important;
+  margin: 0 auto !important;
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  display: grid !important;
+  grid-template-columns: repeat(11, auto) !important; /* 6 stats + 5 dividers */
+  align-items: stretch !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2) !important;
+}
+
+/* Each stat cell */
+.stat-row {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  padding: 14px 20px !important;
+  gap: 3px !important;
+  min-width: 0 !important;
+}
+.stat-row:hover {
+  background: rgba(45,206,255,0.03) !important;
+}
+
+.stat-row-label {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+  color: var(--text-muted) !important;
+}
+.stat-row-value {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+}
+.stat-row-sub {
+  font-size: 11px !important;
+  color: var(--text-muted) !important;
+}
+
+/* LIVE cell */
+.live-row { background: rgba(34,197,94,0.03) !important; }
+.live-value-inline {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #22c55e !important;
+}
+
+/* Vertical dividers between stats */
+.stats-divider {
+  width: 1px !important;
+  background: var(--border) !important;
+  align-self: stretch !important;
+  margin: 8px 0 !important;
+}
+
+/* Loading state */
+.stats-loading {
+  padding: 16px 20px !important;
+  color: var(--text-muted) !important;
+  font-size: 13px !important;
+  grid-column: 1 / -1 !important;
+}
+
+/* Mobile: stack into 2 cols */
+@media (max-width: 768px) {
+  .stats-strip-card {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0 !important;
+  }
+  .stats-divider { display: none !important; }
+  .stat-row {
+    padding: 12px 14px !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    border-right: 1px solid var(--border-subtle) !important;
+  }
+  .stat-row:nth-child(even) { border-right: none !important; }
+  .stat-row-value { font-size: 16px !important; }
+  .live-value-inline { font-size: 16px !important; }
+  .stats-strip-outer { padding: 12px var(--page-pad) !important; }
+}
+
+@media (max-width: 480px) {
+  .stat-row-value { font-size: 14px !important; }
+  .stat-row { padding: 10px 12px !important; }
+}
+
+/* ══ STATS STRIP — match home-content width exactly ═════════════════ */
+.stats-strip-outer {
+  padding-left: var(--page-pad) !important;
+  padding-right: var(--page-pad) !important;
+}
+.stats-strip-card {
+  max-width: var(--page-width) !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* ══ STATS CARD — inside home-content, full width of container ══════ */
+.stats-strip-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 0 20px 0 !important;
+}
+/* Remove the outer band background since it's now inside home-content */
+.stats-strip-outer { display: contents !important; }
+
+/* ══ STAT ROWS — centred, uniform ═══════════════════════════════════ */
+.stats-strip-card {
+  grid-template-columns: repeat(6, 1fr) !important;
+}
+.stat-row, .live-row {
+  align-items: center !important;
+  text-align: center !important;
+  padding: 16px 12px !important;
+}
+.stat-row-label {
+  text-align: center !important;
+}
+.stat-row-value {
+  text-align: center !important;
+  font-size: 20px !important;
+}
+.stat-row-sub {
+  text-align: center !important;
+}
+.live-value-inline {
+  justify-content: center !important;
+  font-size: 20px !important;
+}
+.stats-divider {
+  display: none !important;
+}
+/* Use border-right on each cell instead for cleaner look */
+.stat-row:not(:last-child), .live-row:not(:last-child) {
+  border-right: 1px solid var(--border) !important;
+}

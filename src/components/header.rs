@@ -8,7 +8,6 @@ const LOGO: Asset = asset!("/assets/telcoin-logo.svg");
 pub fn Header() -> Element {
     let mut dark_mode = use_signal(|| true);
 
-    // Apply theme on mount and when toggled
     use_effect(move || {
         let is_dark = *dark_mode.read();
         let window = web_sys::window().unwrap();
@@ -35,7 +34,6 @@ pub fn Header() -> Element {
                 }
                 div { style: "flex:1;" }
                 nav { class: "header-nav",
-                    Link { to: Route::HomePage {}, "Home" }
                     Link { to: Route::ValidatorsPage {}, "Validators" }
                     a {
                         href: "https://telcoin.network/faucet",
