@@ -1901,3 +1901,92 @@ body { font-size: 15px; overflow-x: hidden; }
   margin-bottom: 24px !important;
   border-radius: 14px !important;
 }
+
+/* ── CONSENSUS EXPLAINER (validators page) ───────────────────────── */
+.consensus-explainer {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--tel-blue);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-card);
+}
+.ce-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+}
+.ce-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.chip.info {
+  background: var(--tel-blue-dim);
+  border: 1px solid var(--tel-blue-border);
+  color: var(--tel-blue);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.ce-body {
+  padding: 16px 20px;
+}
+.ce-body p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.ce-steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.ce-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+.ce-step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--tel-blue-dim);
+  border: 1px solid var(--tel-blue-border);
+  color: var(--tel-blue);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ce-step-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Block leader note */
+.block-leader-note {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  line-height: 1.5;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .ce-steps { grid-template-columns: 1fr; }
+  .ce-header { flex-wrap: wrap; }
+}

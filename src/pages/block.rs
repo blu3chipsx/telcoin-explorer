@@ -6,7 +6,7 @@ use crate::services::rpc::{
     Block, Transaction, shorten_hash, shorten_addr,
     unix_to_age, unix_to_datetime, format_tel,
 };
-use crate::components::loading::{Loading, ErrorBox, CopyButton};
+use crate::components::loading::{Loading, ErrorBox, CopyButton, AddrDisplay};
 
 #[component]
 pub fn BlockPage(block_number: u64) -> Element {
@@ -107,7 +107,7 @@ pub fn BlockPage(block_number: u64) -> Element {
                             }
                         }
                         div { class: "detail-row",
-                            div { class: "detail-key", "Validator" }
+                            div { class: "detail-key", "Leader" }
                             div { class: "detail-val",
                                 Link { to: Route::AddressPage { address: b.validator.clone() },
                                     span { class: "hash-cell", "{b.validator}" }
@@ -156,8 +156,21 @@ pub fn BlockPage(block_number: u64) -> Element {
                         div { class: "detail-row",
                             div { class: "detail-key", "Consensus" }
                             div { class: "detail-val",
-                                span { class: "chip info", "DAG — Narwhal/Bullshark" }
-                                span { class: "chip success", style: "margin-left:8px;", "Instant Finality" }
+                                span { class: "chip info", "Narwhal / Bullshark DAG-BFT" }
+                                span { class: "chip success", style: "margin-left:8px;",
+                                    title: "Blocks are final once 2f+1 validators commit the subdag. No reorgs possible.",
+                                    "✓ Instant Finality"
+                                }
+                            }
+                        }
+                        div { class: "detail-row",
+                            div { class: "detail-key", "Block Leader" }
+                            div { class: "detail-val",
+                                span { class: "block-leader-note",
+                                    "The validator address shown is the "
+                                    strong { "leader" }
+                                    " selected by Bullshark for this consensus round. All validators contributed to committing this block."
+                                }
                             }
                         }
                         div { class: "detail-row",

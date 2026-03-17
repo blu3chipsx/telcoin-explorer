@@ -10,10 +10,10 @@ use crate::components::loading::{Loading, ErrorBox};
 
 #[component]
 pub fn ValidatorsPage() -> Element {
-    let validators: Signal<Vec<String>>      = use_signal(|| vec![]);
-    let epoch_num:  Signal<Option<u64>>      = use_signal(|| None);
+    let validators: Signal<Vec<String>>  = use_signal(|| vec![]);
+    let epoch_num:  Signal<Option<u64>> = use_signal(|| None);
     let loading     = use_signal(|| true);
-    let error: Signal<Option<String>>        = use_signal(|| None);
+    let error: Signal<Option<String>>   = use_signal(|| None);
 
     use_effect(move || {
         let mut validators = validators.clone();
@@ -22,9 +22,7 @@ pub fn ValidatorsPage() -> Element {
         let mut error      = error.clone();
         wasm_bindgen_futures::spawn_local(async move {
             loading.set(true);
-            // Fetch epoch number
             epoch_num.set(get_epoch_info().await);
-            // Fetch validators from recent blocks
             match get_validators_from_registry().await {
                 Ok(v)  => validators.set(v),
                 Err(e) => error.set(Some(e)),
@@ -33,13 +31,9 @@ pub fn ValidatorsPage() -> Element {
         });
     });
 
-    // Compute epoch sub-text before rsx
-    let epoch_sub = {
-        let ep = *epoch_num.read();
-        match ep {
-            Some(e) => format!("Current epoch: {}", e),
-            None    => "Rotating validator committees".to_string(),
-        }
+    let epoch_sub = match *epoch_num.read() {
+        Some(e) => format!("Current epoch: {}", e),
+        None    => "Rotating validator committees".to_string(),
     };
 
     rsx! {
@@ -55,30 +49,88 @@ pub fn ValidatorsPage() -> Element {
                 }
             }
 
-            // Info cards
+            // ── Network Architecture explanation ─────────────────────
+            div { class: "consensus-explainer",
+                div { class: "ce-header",
+                    svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none",
+                        stroke:"var(--tel-blue)", stroke_width:"1.5",
+                        stroke_linecap:"round", stroke_linejoin:"round",
+                        path { d:"M12 2L2 7l10 5 10-5-10-5z" }
+                        path { d:"M2 17l10 5 10-5" }
+                        path { d:"M2 12l10 5 10-5" }
+                    }
+                    span { class: "ce-title", "DAG-BFT Consensus" }
+                    span { class: "chip info", style: "margin-left: auto;", "Narwhal + Bullshark" }
+                }
+                div { class: "ce-body",
+                    p {
+                        "Telcoin Network uses a "
+                        strong { "Directed Acyclic Graph (DAG)" }
+                        "-based Byzantine Fault Tolerant consensus. Unlike traditional Proof-of-Stake chains with a single block proposer, all validators simultaneously collect transactions into "
+                        em { "batches" }
+                        " via "
+                        strong { "Narwhal" }
+                        " (the DAG/mempool layer), while "
+                        strong { "Bullshark" }
+                        " causally orders them for the EVM to execute."
+                    }
+                    div { class: "ce-steps",
+                        div { class: "ce-step",
+                            div { class: "ce-step-num", "1" }
+                            div { class: "ce-step-text",
+                                strong { "Workers" }
+                                " collect transactions into batches and request attestation from 2f+1 validators"
+                            }
+                        }
+                        div { class: "ce-step",
+                            div { class: "ce-step-num", "2" }
+                            div { class: "ce-step-text",
+                                strong { "Primaries" }
+                                " propose headers referencing batch digests; peers vote to form certificates (2f+1 stake required)"
+                            }
+                        }
+                        div { class: "ce-step",
+                            div { class: "ce-step-num", "3" }
+                            div { class: "ce-step-text",
+                                strong { "Bullshark" }
+                                " commits a leader's subdag when 2f+1 stake in round R+2 references it — providing instant finality"
+                            }
+                        }
+                        div { class: "ce-step",
+                            div { class: "ce-step-num", "4" }
+                            div { class: "ce-step-text",
+                                strong { "EVM execution" }
+                                " via Reth processes the ordered transactions — fully Ethereum-compatible"
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ── Info cards ───────────────────────────────────────────
             div { class: "validator-info-grid",
                 div { class: "info-card",
                     div { class: "info-card-icon", "⬡" }
                     div {
-                        div { class: "info-card-label", "Consensus Type" }
-                        div { class: "info-card-value", "DAG — Narwhal/Bullshark" }
-                        div { class: "info-card-sub", "Parallel batch collection with causal ordering" }
+                        div { class: "info-card-label", "Consensus" }
+                        div { class: "info-card-value", "Narwhal / Bullshark" }
+                        div { class: "info-card-sub", "DAG-BFT · Instant finality" }
                     }
                 }
                 div { class: "info-card",
                     div { class: "info-card-icon", "⏱" }
                     div {
                         div { class: "info-card-label", "Epoch Duration" }
-                        div { class: "info-card-value", "{EPOCH_DURATION_HOURS} Hours" }
+                        div { class: "info-card-value", "{EPOCH_DURATION_HOURS}h" }
                         div { class: "info-card-sub", "{epoch_sub}" }
                     }
                 }
                 div { class: "info-card",
-                    div { class: "info-card-icon", "🔒" }
+                    div { class: "info-card-icon", "⅔" }
                     div {
-                        div { class: "info-card-label", "Required Stake" }
-                        div { class: "info-card-value", "{VALIDATOR_STAKE_REQUIRED}" }
-                        div { class: "info-card-sub", "GSMA MNO validators only" }
+                        div { class: "info-card-label", "BFT Quorum" }
+                        div { class: "info-card-value", "2f + 1" }
+                        div { class: "info-card-sub", "Tolerates f Byzantine validators" }
                     }
                 }
                 div { class: "info-card",
@@ -90,65 +142,54 @@ pub fn ValidatorsPage() -> Element {
                                 span { class: "hash-cell", "{shorten_addr(CONSENSUS_REGISTRY)}" }
                             }
                         }
-                        div { class: "info-card-sub", "ConsensusRegistry @ 0x07e1…" }
+                        div { class: "info-card-sub", "ConsensusRegistry on-chain" }
                     }
                 }
             }
 
-            // Validator types
+            // ── Validator types ──────────────────────────────────────
             div { class: "panel", style: "margin-bottom: 20px;",
                 div { class: "panel-header",
-                    div { class: "panel-title",
-                        div { class: "panel-title-icon block-icon", "?" }
-                        "Validator Types"
-                    }
+                    span { class: "panel-title", "Validator Roles" }
                 }
                 div { class: "validator-types-grid",
                     div { class: "vtype-card",
                         div { class: "vtype-badge cvv", "CVV" }
                         div { class: "vtype-name", "Committee Voting Validators" }
                         div { class: "vtype-desc",
-                            "Currently active validators casting votes, extending the canonical chain, and reaching consensus on transactions."
+                            "Actively participate in DAG consensus each round. Propose headers, collect votes, form certificates, and cast votes every round. Earn block rewards proportional to leader selections."
                         }
                     }
                     div { class: "vtype-card",
                         div { class: "vtype-badge nvv", "NVV" }
                         div { class: "vtype-name", "Non-Voting Validators" }
                         div { class: "vtype-desc",
-                            "Track and execute consensus but do not vote every round. Vote on execution results at epoch transitions."
+                            "Track and execute consensus output but do not vote in DAG rounds. Participate in epoch transition votes only. Maintain full execution state."
                         }
                     }
                     div { class: "vtype-card",
                         div { class: "vtype-badge ov", "OV" }
                         div { class: "vtype-name", "Observing Validators" }
                         div { class: "vtype-desc",
-                            "Track and execute consensus but never vote. Used as independent verification clients."
+                            "Follow consensus output and execute blocks without participating in voting. Used as independent verification clients and light followers."
                         }
                     }
                 }
             }
 
-            // Active validators list
+            // ── Active validators list ───────────────────────────────
             div { class: "panel",
                 div { class: "panel-header",
-                    div { class: "panel-title",
-                        div { class: "panel-title-icon block-icon",
-                            svg { xmlns: "http://www.w3.org/2000/svg", width: "14", height: "14", view_box: "0 0 24 24", fill: "none", stroke: "currentColor", stroke_width: "2",
-                                path { d: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" }
-                                circle { cx: "9", cy: "7", r: "4" }
-                                path { d: "M23 21v-2a4 4 0 0 0-3-3.87" }
-                                path { d: "M16 3.13a4 4 0 0 1 0 7.75" }
-                            }
-                        }
+                    span { class: "panel-title",
                         "Active Validators"
-                        span { class: "panel-count",
-                            "({validators.read().len()} seen in last 50 blocks)"
-                        }
+                    }
+                    span { class: "panel-count",
+                        "({validators.read().len()} seen in last 50 blocks)"
                     }
                 }
 
                 if *loading.read() {
-                    Loading { msg: Some("Scanning recent blocks for validators…".to_string()) }
+                    Loading { msg: Some("Fetching validators from ConsensusRegistry…".to_string()) }
                 } else if let Some(err) = error.read().as_ref() {
                     ErrorBox { msg: err.clone() }
                 } else if validators.read().is_empty() {
@@ -164,7 +205,6 @@ pub fn ValidatorsPage() -> Element {
                                     th { "VALIDATOR ADDRESS" }
                                     th { "ROLE" }
                                     th { "STATUS" }
-                                    th { "REQUIRED STAKE" }
                                     th { "ACTIONS" }
                                 }
                             }
@@ -179,7 +219,6 @@ pub fn ValidatorsPage() -> Element {
                                         }
                                         td { span { class: "vtype-badge cvv", "CVV" } }
                                         td { span { class: "chip success", "Active" } }
-                                        td { style: "color: var(--text-secondary);", "1,000,000 TEL" }
                                         td {
                                             Link { to: Route::AddressPage { address: addr.clone() },
                                                 span { class: "action-link", "View →" }
@@ -193,15 +232,19 @@ pub fn ValidatorsPage() -> Element {
                 }
             }
 
-            // Info note
+            // ── Epoch info note ──────────────────────────────────────
             div { class: "info-note",
                 span { class: "info-note-icon", "ℹ" }
                 div {
-                    strong { "About Epoch Committees: " }
-                    "Every 24 hours, the ConsensusRegistry at "
-                    code { "{CONSENSUS_REGISTRY}" }
-                    " runs concludeEpoch() to rotate the validator committee using Fisher-Yates shuffle seeded by the epoch's aggregate BLS12-381 signature. "
-                    "Validators must stake 1M TEL and hold a GSMA ConsensusNFT. "
+                    strong { "Epoch Transitions: " }
+                    "Every "
+                    strong { "{EPOCH_DURATION_HOURS} hours" }
+                    ", the ConsensusRegistry runs "
+                    code { "concludeEpoch()" }
+                    " to finalise validator rewards based on leader selection counts, then shuffles the committee for the next epoch using Fisher-Yates seeded by the epoch's aggregate BLS12-381 signature. "
+                    "Validators must stake "
+                    strong { "{VALIDATOR_STAKE_REQUIRED} TEL" }
+                    " and hold a GSMA ConsensusNFT. "
                     a { href: "https://tnips.telcoin.network/tnips/tnips/tnip_2.html", target: "_blank", "Read TNIP-2 ↗" }
                 }
             }
