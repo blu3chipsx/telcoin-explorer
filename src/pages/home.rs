@@ -251,9 +251,8 @@ div { class: "dual-col",
                                         div { class: "home-row-mid",
                                             span { class: "home-row-label", "Validator" }
                                             Link { to: Route::AddressPage { address: block.validator.clone() },
-                                                AddrDisplay {
-                                                    address: block.validator.clone(),
-                                                    short: shorten_addr(&block.validator)
+                                                span { class: "hash-cell home-row-addr",
+                                                    "{shorten_addr(&block.validator)}"
                                                 }
                                             }
                                             span { class: "home-row-detail",
@@ -446,9 +445,8 @@ fn Sparkline(data: Vec<(u64, f64)>) -> Element {
 
     rsx! {
         svg {
-            width: "100%", height: "100%",
+            width: "160", height: "40",
             view_box: "0 0 80 28",
-            preserve_aspect_ratio: "none",
             class: "sparkline-svg",
             polyline {
                 points: "{points}",
