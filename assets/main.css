@@ -3005,3 +3005,455 @@ body { font-size: 15px !important; }
 .footer-link { font-size: 13px !important; }
 .footer-sub  { font-size: 13px !important; }
 .footer-brand { font-size: 15px !important; }
+
+/* ══ SPARKLINE ═══════════════════════════════════════════════════════ */
+.stat-sparkline {
+  margin-left: auto;
+  flex-shrink: 0;
+  opacity: 0.7;
+  align-self: center;
+}
+.sparkline-svg { display: block; }
+.sparkline-empty { width: 80px; height: 28px; }
+
+/* ══ BLOCK DETAIL PAGE ═══════════════════════════════════════════════ */
+.block-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.block-page-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-title-num { color: var(--tel-blue); }
+.block-nav-btns { display: flex; gap: 8px; }
+
+.detail-panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Block transaction table */
+.block-tx-table {
+  width: 100%;
+  overflow-x: auto;
+}
+.btx-header {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1.2fr 1fr;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.btx-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1.2fr 1fr;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  align-items: center;
+  transition: background 0.12s;
+  font-size: 13px;
+}
+.btx-row:last-child { border-bottom: none; }
+.btx-row:hover { background: rgba(45,206,255,0.03); }
+
+.btx-col-hash { display: flex; align-items: center; gap: 6px; }
+.btx-status { font-size: 11px; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
+.btx-status.success { background: rgba(34,197,94,0.12); color: #22c55e; }
+.btx-status.failed  { background: rgba(239,68,68,0.12); color: #ef4444; }
+.btx-contract { font-size: 11px; color: var(--text-muted); font-style: italic; }
+.btx-value { font-family: var(--font-mono); font-size: 12px; color: var(--text-primary); }
+.btx-fee   { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+.btx-more  { padding: 12px 20px; font-size: 12px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border-subtle); }
+
+.mono-wrap { word-break: break-all; }
+
+/* Mobile tx table */
+@media (max-width: 600px) {
+  .btx-header { display: none; }
+  .btx-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 12px 14px;
+  }
+  .btx-col-from::before { content: "From: "; color: var(--text-muted); font-size: 10px; }
+  .btx-col-to::before   { content: "To: ";   color: var(--text-muted); font-size: 10px; }
+  .btx-col-value::before { content: "Value: "; color: var(--text-muted); font-size: 10px; }
+  .btx-col-fee { display: none; }
+}
+
+/* ══ HERO LAYOUT WITH GAS CARD ═══════════════════════════════════════ */
+
+.hero-top-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+}
+.hero-left {
+  flex: 1;
+  min-width: 0;
+}
+.hero-left .hero-search-box {
+  max-width: 100% !important;
+}
+
+/* Gas price card */
+.hero-gas-card {
+  flex-shrink: 0;
+  width: 220px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 18px 20px;
+  backdrop-filter: blur(10px);
+  margin-top: 8px;
+}
+.hero-gas-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 10px;
+}
+.hero-gas-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.hero-gas-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 14px;
+}
+.hero-gas-chart {
+  display: flex;
+  align-items: flex-end;
+}
+.hero-gas-chart .sparkline-svg {
+  width: 100%;
+  height: 40px;
+}
+
+/* Wider sparkline inside gas card */
+.hero-gas-chart svg {
+  width: 180px !important;
+  height: 40px !important;
+}
+
+/* Mobile — stack gas card below search */
+@media (max-width: 768px) {
+  .hero-top-row { flex-direction: column !important; gap: 16px !important; }
+  .hero-gas-card { width: 100% !important; }
+  .hero-gas-chart svg { width: 100% !important; }
+}
+
+/* ══ HERO LAYOUT — search natural width, gas card right-anchored ════ */
+
+.hero-top-row {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 0 !important;
+}
+.hero-left {
+  flex: 1 !important;
+  min-width: 0 !important;
+  padding-right: 40px !important;
+}
+.hero-left .hero-search-box {
+  max-width: 640px !important;
+  width: 100% !important;
+}
+.hero-gas-card {
+  flex-shrink: 0 !important;
+  width: 200px !important;
+  margin-top: 0 !important;
+  align-self: center !important;
+}
+
+@media (max-width: 900px) {
+  .hero-left { padding-right: 20px !important; }
+  .hero-gas-card { width: 170px !important; }
+}
+@media (max-width: 768px) {
+  .hero-top-row { flex-direction: column !important; }
+  .hero-left { padding-right: 0 !important; }
+  .hero-gas-card { width: 100% !important; }
+}
+
+/* ══ STATS STRIP — 5 cols (no empty 6th) + gas card closer ══════════ */
+.stats-strip-card {
+  grid-template-columns: repeat(5, 1fr) !important;
+}
+
+/* Gas card pulled left — sits closer to search */
+.hero-left {
+  max-width: 700px !important;
+  flex: none !important;
+  padding-right: 0 !important;
+}
+.hero-top-row {
+  justify-content: flex-start !important;
+  gap: 24px !important;
+}
+.hero-gas-card {
+  width: 190px !important;
+  align-self: flex-start !important;
+  margin-top: 10px !important;
+}
+
+@media (max-width: 900px) {
+  .stats-strip-card { grid-template-columns: repeat(3, 1fr) !important; }
+}
+@media (max-width: 580px) {
+  .stats-strip-card { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ══ HERO LAYOUT — Etherscan style: title+search left, card top-right ═ */
+
+.hero-inner {
+  position: relative !important;
+}
+.hero-top-row {
+  display: block !important;
+  position: relative !important;
+}
+.hero-left {
+  max-width: 640px !important;
+  flex: none !important;
+  display: block !important;
+  padding-right: 0 !important;
+}
+.hero-left .hero-search-box {
+  max-width: 640px !important;
+}
+.hero-gas-card {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 220px !important;
+  margin-top: 0 !important;
+}
+
+@media (max-width: 900px) {
+  .hero-gas-card {
+    position: static !important;
+    width: 100% !important;
+    margin-top: 16px !important;
+  }
+}
+
+/* ══ HERO LAYOUT — gas card just right of search bar ════════════════ */
+
+.hero-top-row {
+  display: flex !important;
+  align-items: flex-start !important;
+  position: static !important;
+  gap: 20px !important;
+  max-width: 900px !important;
+}
+.hero-left {
+  flex: 1 !important;
+  max-width: 640px !important;
+  display: block !important;
+  padding-right: 0 !important;
+  position: static !important;
+}
+.hero-gas-card {
+  position: static !important;
+  flex-shrink: 0 !important;
+  width: 200px !important;
+  margin-top: 4px !important;
+  align-self: flex-start !important;
+}
+
+@media (max-width: 860px) {
+  .hero-top-row { flex-direction: column !important; max-width: 100% !important; }
+  .hero-gas-card { width: 100% !important; }
+}
+
+/* ══ HERO LAYOUT — final fix matching yellow box annotation ══════════ */
+
+.hero-top-row {
+  display: grid !important;
+  grid-template-columns: 640px 220px !important;
+  gap: 28px !important;
+  align-items: stretch !important;
+  max-width: 100% !important;
+}
+.hero-left {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  max-width: 100% !important;
+  padding-right: 0 !important;
+}
+.hero-gas-card {
+  position: static !important;
+  width: 100% !important;
+  margin-top: 0 !important;
+  align-self: stretch !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+@media (max-width: 920px) {
+  .hero-top-row {
+    grid-template-columns: 1fr !important;
+  }
+  .hero-gas-card { width: 100% !important; }
+}
+
+/* ══ HERO LAYOUT — gas card centred in right half ═══════════════════ */
+
+.hero-top-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 28px !important;
+  align-items: stretch !important;
+  max-width: 100% !important;
+}
+.hero-left {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  max-width: 100% !important;
+  padding-right: 0 !important;
+}
+.hero-gas-card {
+  position: static !important;
+  width: 220px !important;
+  margin: 0 auto !important;
+  align-self: center !important;
+}
+
+@media (max-width: 860px) {
+  .hero-top-row { grid-template-columns: 1fr !important; }
+  .hero-gas-card { width: 100% !important; margin: 0 !important; }
+}
+
+/* ══ BLOCK ROW ICON — 3D cube ════════════════════════════════════════ */
+.block-row-icon::after { display: none !important; }
+.home-row-icon.block-row-icon {
+  background: var(--tel-blue-dim) !important;
+  border-color: var(--tel-blue-border) !important;
+}
+/* Inject cube SVG via background — use inline SVG in Rust instead */
+
+/* ══ TOKEN PAGE ══════════════════════════════════════════════════════ */
+.token-page-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 20px;
+}
+.token-icon-wrap {
+  width: 52px; height: 52px;
+  background: var(--tel-blue-dim);
+  border: 2px solid var(--tel-blue-border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.token-icon-letter {
+  font-size: 22px; font-weight: 800;
+  color: var(--tel-blue);
+}
+.token-symbol-badge {
+  display: inline-block;
+  background: var(--tel-blue-dim);
+  border: 1px solid var(--tel-blue-border);
+  color: var(--tel-blue);
+  padding: 3px 10px; border-radius: 6px;
+  font-size: 12px; font-weight: 700;
+  margin-top: 4px;
+}
+
+/* ══ HERO — wider search, tighter gas card spacing ══════════════════ */
+.hero-top-row {
+  grid-template-columns: minmax(0, 720px) 200px !important;
+  gap: 20px !important;
+}
+.hero-left .hero-search-box {
+  max-width: 100% !important;
+}
+
+/* ══ HERO — search + gas card inline, gas card tight to search end ══ */
+.hero-top-row {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 16px !important;
+  max-width: 900px !important;
+  grid-template-columns: unset !important;
+}
+.hero-left {
+  flex: 1 !important;
+  max-width: 640px !important;
+}
+.hero-left .hero-search-box {
+  max-width: 100% !important;
+}
+.hero-gas-card {
+  position: static !important;
+  flex-shrink: 0 !important;
+  width: 200px !important;
+  margin: 0 !important;
+  align-self: flex-start !important;
+}
+
+/* ══ HERO LAYOUT — DEFINITIVE FINAL ═════════════════════════════════
+   Layout: [title+search+hints] [gap] [gas card] [gap] [right edge]
+   The hero-inner is full page width.
+   hero-top-row uses space-between to push gas card to the right third.
+   Gas card is centred within its own space using auto margins.
+══════════════════════════════════════════════════════════════════════ */
+.hero-top-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 0 !important;
+  max-width: 100% !important;
+  grid-template-columns: unset !important;
+}
+.hero-left {
+  flex: 0 0 auto !important;
+  width: 55% !important;
+  max-width: 620px !important;
+  padding-right: 0 !important;
+  display: block !important;
+  position: static !important;
+}
+.hero-left .hero-search-box {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+.hero-gas-card {
+  flex: 0 0 auto !important;
+  width: 200px !important;
+  position: static !important;
+  margin: 0 auto !important;
+  align-self: center !important;
+}
+
+@media (max-width: 860px) {
+  .hero-top-row { flex-direction: column !important; }
+  .hero-left { width: 100% !important; max-width: 100% !important; }
+  .hero-gas-card { width: 100% !important; margin: 0 !important; align-self: auto !important; }
+}

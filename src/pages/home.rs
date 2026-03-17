@@ -3,7 +3,8 @@ use dioxus::prelude::*;
 use crate::router::Route;
 use crate::services::rpc::{
     get_latest_blocks, get_network_stats, get_avg_block_time,
-    subscribe_new_blocks, Block, NetworkStats, shorten_hash, shorten_addr, unix_to_age,
+    get_block_activity, subscribe_new_blocks,
+    Block, NetworkStats, shorten_hash, shorten_addr, unix_to_age,
 };
 use crate::components::loading::{Loading, ErrorBox};
 
@@ -17,6 +18,7 @@ pub fn HomePage() -> Element {
     let mut error: Signal<Option<String>>        = use_signal(|| None);
     let mut last_updated: Signal<String>         = use_signal(|| "".to_string());
     let mut avg_block_time: Signal<f64>          = use_signal(|| 0.0);
+    let mut gas_history: Signal<Vec<(u64, f64)>>  = use_signal(|| vec![]);
 
     let do_fetch = move || {
         wasm_bindgen_futures::spawn_local(async move {
@@ -26,6 +28,8 @@ pub fn HomePage() -> Element {
             );
             let avg_time = get_avg_block_time(10).await;
             avg_block_time.set(avg_time);
+            let history = get_block_activity(20).await;
+            gas_history.set(history);
             match stats_res {
                 Ok(s)  => stats.set(Some(s)),
                 Err(e) => error.set(Some(e)),
@@ -66,18 +70,18 @@ pub fn HomePage() -> Element {
             // ── Hero (Etherscan-style) ────────────────────────────────
             div { class: "hero",
                 div { class: "hero-inner",
-                    div { class: "hero-text",
-                        h1 { class: "hero-title",
-                            "The Telcoin Network"
-                            br {}
-                            span { class: "hero-title-accent", "Blockchain Explorer" }
-                        }
-                    }
-                    div { class: "hero-search-box",
+                    div { class: "hero-top-row",
+                        div { class: "hero-left",
+                            h1 { class: "hero-title",
+                                "The Telcoin Network"
+                                br {}
+                                span { class: "hero-title-accent", "Blockchain Explorer" }
+                            }
+                            div { class: "hero-search-box",
                         input {
                             class: "hero-search-input",
                             id: "home-search",
-                            placeholder: "Search by Address / Txn Hash / Block Number",
+                            placeholder: "Search by Address / Tx Hash / Block / Token",
                             onkeydown: move |e: Event<KeyboardData>| {
                                 if e.key() == Key::Enter { run_search(); }
                             }
@@ -98,12 +102,35 @@ pub fn HomePage() -> Element {
                             }
                         }
                     }
-                    div { class: "hero-hints",
-                        span { "Supported: " }
-                        span { class: "hint-tag", "Address" }
-                        span { class: "hint-tag", "Transaction" }
-                        span { class: "hint-tag", "Block" }
-                    }
+                            div { class: "hero-hints",
+                                span { "Supported: " }
+                                span { class: "hint-tag", "0x Address" }
+                                span { class: "hint-tag", "Tx Hash" }
+                                span { class: "hint-tag", "Block #" }
+                                span { class: "hint-tag", "Token" }
+                            }
+                        } // close hero-left
+
+                        // Gas price card — right side
+                        if let Some(s) = stats.read().as_ref() {
+                            div { class: "hero-gas-card",
+                                div { class: "hero-gas-header",
+                                    svg { width:"16", height:"16", view_box:"0 0 24 24", fill:"none", stroke:"var(--tel-blue)", stroke_width:"2", stroke_linecap:"round", stroke_linejoin:"round",
+                                        path { d:"M3 22V8l9-6 9 6v14" }
+                                        path { d:"M9 22V12h6v10" }
+                                    }
+                                    span { "GAS PRICE" }
+                                }
+                                div { class: "hero-gas-value",
+                                    { format!("{:.2} Gwei", s.gas_price_gwei) }
+                                }
+                                div { class: "hero-gas-sub", "Base fee · Last 20 blocks" }
+                                div { class: "hero-gas-chart",
+                                    Sparkline { data: gas_history.read().clone() }
+                                }
+                            }
+                        }
+                    } // close hero-top-row
                 }
             }
 
@@ -136,10 +163,7 @@ pub fn HomePage() -> Element {
                         StatRow { label: "LATEST BLOCK",
                             value: format!("#{}", s.latest_block),
                             sub: Some("Telcoin Network".to_string()) }
-                        div { class: "stats-divider" }
-                        StatRow { label: "GAS PRICE",
-                            value: format!("{:.2} Gwei", s.gas_price_gwei),
-                            sub: Some("Base fee".to_string()) }
+
                         div { class: "stats-divider" }
                         StatRow { label: "TRANSACTIONS",
                             value: format!("{}", total_txs),
@@ -167,8 +191,10 @@ div { class: "dual-col",
                     // Latest Blocks panel
                     div { class: "panel",
                         div { class: "panel-header",
-                            svg { width:"18", height:"18", view_box:"0 0 24 24", fill:"none", stroke:"var(--tel-blue)", stroke_width:"2", stroke_linecap:"round", stroke_linejoin:"round",
+                            svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none", stroke:"var(--tel-blue)", stroke_width:"1.5", stroke_linecap:"round", stroke_linejoin:"round",
                                 path { d:"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" }
+                                path { d:"M3.27 6.96 12 12.01l8.73-5.05" }
+                                path { d:"M12 22.08V12" }
                             }
                             span { class: "panel-title", "Latest Blocks" }
                         }
@@ -181,7 +207,15 @@ div { class: "dual-col",
                                 for block in blocks.read().iter() {
                                     li { class: "home-row",
                                         // Block icon
-                                        div { class: "home-row-icon block-row-icon" }
+                                        div { class: "home-row-icon block-row-icon",
+                                            svg { width:"16", height:"16", view_box:"0 0 24 24", fill:"none",
+                                                stroke:"var(--tel-blue)", stroke_width:"1.8",
+                                                stroke_linecap:"round", stroke_linejoin:"round",
+                                                path { d:"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" }
+                                                path { d:"M3.27 6.96 12 12.01l8.73-5.05" }
+                                                path { d:"M12 22.08V12" }
+                                            }
+                                        }
                                         // Block number + age
                                         div { class: "home-row-main",
                                             Link { to: Route::BlockPage { block_number: block.number },
@@ -280,6 +314,8 @@ fn StatRow(label: String, value: String, sub: Option<String>) -> Element {
         "LATEST BLOCK" => rsx! {
             svg { width:"20", height:"20", view_box:"0 0 24 24", fill:"none", stroke:"currentColor", stroke_width:"1.5", stroke_linecap:"round", stroke_linejoin:"round", class:"stat-icon",
                 path { d:"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" }
+                path { d:"M3.27 6.96 12 12.01l8.73-5.05" }
+                path { d:"M12 22.08V12" }
             }
         },
         "GAS PRICE" => rsx! {
@@ -341,15 +377,65 @@ fn run_search() {
         let q = input.value();
         let q = q.trim().to_string();
         if q.is_empty() { return; }
-        let url = if q.len() == 66 && q.starts_with("0x") {
-            format!("/tx/{}", q)
+        let window2 = window.clone();
+        if q.len() == 66 && q.starts_with("0x") {
+            window.location().set_href(&format!("/tx/{}", q)).ok();
         } else if q.len() == 42 && q.starts_with("0x") {
-            format!("/address/{}", q)
+            // Check if it's a token contract, otherwise go to address
+            wasm_bindgen_futures::spawn_local(async move {
+                use crate::services::rpc::{is_contract, get_token_symbol};
+                if is_contract(&q).await {
+                    let sym = get_token_symbol(&q).await;
+                    if sym != "ERC-20" && !sym.is_empty() {
+                        window2.location().set_href(&format!("/token/{}", q)).ok();
+                        return;
+                    }
+                }
+                window2.location().set_href(&format!("/address/{}", q)).ok();
+            });
         } else if q.chars().all(|c| c.is_ascii_digit()) {
-            format!("/block/{}", q)
-        } else {
-            return;
-        };
-        window.location().set_href(&url).ok();
+            window.location().set_href(&format!("/block/{}", q)).ok();
+        }
+    }
+}
+
+// ── Sparkline component ───────────────────────────────────────────────────
+
+#[component]
+fn Sparkline(data: Vec<(u64, f64)>) -> Element {
+    if data.len() < 2 {
+        return rsx! { div { class: "sparkline-empty" } };
+    }
+
+    let max = data.iter().map(|(_, v)| *v).fold(0.0_f64, f64::max).max(1.0);
+    let min = data.iter().map(|(_, v)| *v).fold(f64::MAX, f64::min);
+    let range = (max - min).max(1.0);
+
+    let w = 80.0_f64;
+    let h = 28.0_f64;
+    let n = data.len() as f64;
+
+    let points: String = data.iter().enumerate().map(|(i, (_, v))| {
+        let x = i as f64 / (n - 1.0) * w;
+        let y = h - ((v - min) / range * h * 0.85 + h * 0.05);
+        format!("{:.1},{:.1}", x, y)
+    }).collect::<Vec<_>>().join(" ");
+
+    rsx! {
+        svg {
+            width: "100%", height: "100%",
+            view_box: "0 0 80 28",
+            preserve_aspect_ratio: "none",
+            class: "sparkline-svg",
+            polyline {
+                points: "{points}",
+                fill: "none",
+                stroke: "var(--tel-blue)",
+                stroke_width: "1.5",
+                stroke_linecap: "round",
+                stroke_linejoin: "round",
+                opacity: "0.8",
+            }
+        }
     }
 }

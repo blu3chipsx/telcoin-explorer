@@ -641,3 +641,95 @@ pub async fn subscribe_new_blocks(
         }
     }
 }
+
+// ─── Get multiple transactions for block detail page ──────────────────────
+
+pub async fn get_transactions_for_block(hashes: &[String]) -> Vec<Transaction> {
+    let mut results = Vec::new();
+    // Fetch up to 50 to avoid overloading RPC
+    for hash in hashes.iter().take(50) {
+        if let Ok(tx) = get_transaction(hash).await {
+            results.push(tx);
+        }
+    }
+    results
+}
+
+// ─── Gas price history for sparkline ─────────────────────────────────────
+// Returns (block_number, gas_used_pct) for recent blocks to show activity
+
+pub async fn get_block_activity(sample: u64) -> Vec<(u64, f64)> {
+    let latest = match get_block_number().await {
+        Ok(n) => n,
+        Err(_) => return vec![],
+    };
+    let mut points = Vec::new();
+    for i in (0..sample).rev() {
+        let num = latest.saturating_sub(i);
+        if let Ok(b) = get_block_by_number(num).await {
+            let pct = if b.gas_limit > 0 {
+                b.gas_used as f64 / b.gas_limit as f64 * 100.0
+            } else { 0.0 };
+            points.push((num, pct));
+        }
+    }
+    points
+}
+
+// ─── Token Info ───────────────────────────────────────────────────────────
+
+#[derive(Debug, Clone)]
+pub struct TokenInfo {
+    pub address:      String,
+    pub name:         String,
+    pub symbol:       String,
+    pub decimals:     u8,
+    pub total_supply: String,
+    pub is_erc20:     bool,
+}
+
+pub async fn get_token_info(address: &str) -> Option<TokenInfo> {
+    // Check it's a contract first
+    if !is_contract(address).await { return None; }
+
+    // Fetch name, symbol, decimals, totalSupply in parallel
+    let (name, symbol, decimals_hex, supply_hex) = futures::join!(
+        get_token_name(address),
+        get_token_symbol(address),
+        eth_call_raw(address, "0x313ce567"), // decimals()
+        eth_call_raw(address, "0x18160ddd")  // totalSupply()
+    );
+
+    if symbol.is_empty() || symbol == "ERC-20" { return None; }
+
+    let decimals = decimals_hex
+        .strip_prefix("0x").unwrap_or(&decimals_hex)
+        .get(..2).and_then(|s| u8::from_str_radix(s, 16).ok())
+        .unwrap_or(18);
+
+    let supply_raw = u128::from_str_radix(
+        supply_hex.strip_prefix("0x").unwrap_or(&supply_hex).trim_start_matches('0'),
+        16
+    ).unwrap_or(0);
+
+    let divisor = 10u128.pow(decimals as u32);
+    let total_supply = if divisor > 0 {
+        format!("{:.4}", supply_raw as f64 / divisor as f64)
+    } else {
+        supply_raw.to_string()
+    };
+
+    Some(TokenInfo {
+        address: address.to_string(),
+        name,
+        symbol,
+        decimals,
+        total_supply,
+        is_erc20: true,
+    })
+}
+
+async fn eth_call_raw(to: &str, data: &str) -> String {
+    let params = serde_json::json!([{"to": to, "data": data}, "latest"]);
+    rpc_call::<serde_json::Value, String>("eth_call", params).await.unwrap_or_default()
+}
