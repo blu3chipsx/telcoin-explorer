@@ -3,12 +3,12 @@ use dioxus::prelude::*;
 use crate::router::Route;
 use crate::services::rpc::{
     get_latest_blocks, get_network_stats, get_avg_block_time,
-    get_block_activity, subscribe_new_blocks,
+    get_block_activity, get_block_time_history, subscribe_new_blocks,
     Block, NetworkStats, shorten_hash, shorten_addr, unix_to_age,
 };
 use crate::components::loading::{Loading, ErrorBox, AddrDisplay};
 
-const VERSION: &str = "v0.1.6";
+const VERSION: &str = "v0.1.7";
 
 #[component]
 pub fn HomePage() -> Element {
@@ -18,7 +18,8 @@ pub fn HomePage() -> Element {
     let mut error: Signal<Option<String>>        = use_signal(|| None);
     let mut last_updated: Signal<String>         = use_signal(|| "".to_string());
     let mut avg_block_time: Signal<f64>          = use_signal(|| 0.0);
-    let mut gas_history: Signal<Vec<(u64, f64)>>  = use_signal(|| vec![]);
+    let mut gas_history: Signal<Vec<(u64, f64)>>        = use_signal(|| vec![]);
+    let mut block_time_history: Signal<Vec<(u64, f64)>>  = use_signal(|| vec![]);
 
     let do_fetch = move || {
         wasm_bindgen_futures::spawn_local(async move {
@@ -30,6 +31,9 @@ pub fn HomePage() -> Element {
             avg_block_time.set(avg_time);
             let history = get_block_activity(20).await;
             gas_history.set(history);
+            // Block time history — timestamps between consecutive blocks
+            let bt_history = get_block_time_history(20).await;
+            block_time_history.set(bt_history);
             match stats_res {
                 Ok(s)  => stats.set(Some(s)),
                 Err(e) => error.set(Some(e)),
@@ -111,8 +115,9 @@ pub fn HomePage() -> Element {
                             }
                         } // close hero-left
 
-                        // Gas price card — right side
+                        // Right side cards
                         if let Some(s) = stats.read().as_ref() {
+                            div { class: "hero-cards-col",
                             div { class: "hero-gas-card",
                                 div { class: "hero-gas-header",
                                     svg { width:"16", height:"16", view_box:"0 0 24 24", fill:"none", stroke:"var(--tel-blue)", stroke_width:"2", stroke_linecap:"round", stroke_linejoin:"round",
@@ -129,6 +134,29 @@ pub fn HomePage() -> Element {
                                     Sparkline { data: gas_history.read().clone() }
                                 }
                             }
+                            // Block Time card
+                            div { class: "hero-gas-card hero-block-time-card",
+                                div { class: "hero-gas-header",
+                                    svg { width:"16", height:"16", view_box:"0 0 24 24", fill:"none",
+                                        stroke:"var(--tel-blue)", stroke_width:"2",
+                                        stroke_linecap:"round", stroke_linejoin:"round",
+                                        circle { cx:"12", cy:"12", r:"10" }
+                                        path { d:"M12 6v6l4 2" }
+                                    }
+                                    span { "BLOCK TIME" }
+                                }
+                                div { class: "hero-gas-value",
+                                    {
+                                        let t = *avg_block_time.read();
+                                        if t > 0.0 { format!("{:.1}s avg", t) } else { "—".to_string() }
+                                    }
+                                }
+                                div { class: "hero-gas-sub", "Avg · Last 20 blocks" }
+                                div { class: "hero-gas-chart",
+                                    Sparkline { data: block_time_history.read().clone() }
+                                }
+                            }
+                            } // close hero-cards-col
                         }
                     } // close hero-top-row
                 }
@@ -168,13 +196,7 @@ pub fn HomePage() -> Element {
                         StatRow { label: "TRANSACTIONS",
                             value: format!("{}", total_txs),
                             sub: Some("Latest 10 blocks".to_string()) }
-                        div { class: "stats-divider" }
-                        StatRow { label: "BLOCK TIME",
-                            value: {
-                                let t = *avg_block_time.read();
-                                if t > 0.0 { format!("{:.1}s avg", t) } else { "—".to_string() }
-                            },
-                            sub: Some("Last 10 blocks".to_string()) }
+
                         div { class: "stats-divider" }
                         StatRow { label: "CHAIN ID",
                             value: format!("{}", s.chain_id),

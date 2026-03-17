@@ -733,3 +733,26 @@ async fn eth_call_raw(to: &str, data: &str) -> String {
     let params = serde_json::json!([{"to": to, "data": data}, "latest"]);
     rpc_call::<serde_json::Value, String>("eth_call", params).await.unwrap_or_default()
 }
+
+// ─── Block time history for sparkline ────────────────────────────────────
+pub async fn get_block_time_history(sample: u64) -> Vec<(u64, f64)> {
+    let latest = match get_block_number().await {
+        Ok(n) => n,
+        Err(_) => return vec![],
+    };
+    let mut points = Vec::new();
+    let mut prev_ts: Option<u64> = None;
+    for i in (0..sample + 1).rev() {
+        let num = latest.saturating_sub(i);
+        if let Ok(b) = get_block_by_number(num).await {
+            if let Some(prev) = prev_ts {
+                let diff = b.timestamp.saturating_sub(prev) as f64;
+                if diff > 0.0 && diff < 60.0 {
+                    points.push((num, diff));
+                }
+            }
+            prev_ts = Some(b.timestamp);
+        }
+    }
+    points
+}

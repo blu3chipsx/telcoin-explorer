@@ -3591,3 +3591,104 @@ body { font-size: 15px !important; }
   .stat-icon-wrap { width: 28px !important; height: 28px !important; }
   .stat-icon { width: 14px !important; height: 14px !important; }
 }
+
+/* ══ HERO CARDS COLUMN — gas + block time stacked ═══════════════════ */
+.hero-cards-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+  width: 200px;
+  align-self: flex-start;
+}
+.hero-block-time-card {
+  /* same style as gas card, inherited */
+}
+
+/* Footer width fix */
+.footer-inner {
+  max-width: var(--page-width) !important;
+  margin: 0 auto !important;
+  padding: 0 var(--page-pad) !important;
+  box-sizing: border-box !important;
+}
+.site-footer {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Mobile — cards col full width stacked */
+@media (max-width: 860px) {
+  .hero-cards-col {
+    width: 100% !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+  }
+  .hero-gas-card, .hero-block-time-card {
+    flex: 1 !important;
+    width: auto !important;
+  }
+}
+@media (max-width: 480px) {
+  .hero-cards-col { flex-direction: column !important; }
+}
+
+/* ══ HERO CARDS — side by side, aligned with content ════════════════ */
+
+.hero-top-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 0 !important;
+  max-width: 100% !important;
+}
+.hero-left {
+  flex: 0 0 auto !important;
+  width: 55% !important;
+  max-width: 620px !important;
+}
+.hero-cards-col {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 12px !important;
+  width: auto !important;
+  align-self: center !important;
+  margin: 0 auto !important;
+}
+.hero-gas-card, .hero-block-time-card {
+  width: 175px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .hero-top-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  .hero-left { width: 100% !important; max-width: 100% !important; }
+  .hero-cards-col {
+    width: 100% !important;
+    margin: 0 !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+  }
+  .hero-gas-card, .hero-block-time-card {
+    flex: 1 !important;
+    width: auto !important;
+  }
+}
+@media (max-width: 480px) {
+  .hero-cards-col { flex-direction: column !important; }
+  .hero-gas-card, .hero-block-time-card { width: 100% !important; }
+}
+
+/* ══ STATS STRIP — 4 tiles now (block time moved to hero) ═══════════ */
+.stats-strip-card {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+@media (max-width: 700px) {
+  .stats-strip-card { grid-template-columns: repeat(2, 1fr) !important; }
+}

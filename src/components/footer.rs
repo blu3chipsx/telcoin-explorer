@@ -22,7 +22,6 @@ pub fn Footer() -> Element {
                         href: "https://x.com/TelcoinTAO",
                         target: "_blank",
                         class: "footer-link",
-                        // X (Twitter) SVG icon inline
                         svg {
                             width: "14", height: "14",
                             view_box: "0 0 24 24",
@@ -32,11 +31,10 @@ pub fn Footer() -> Element {
                         }
                         "@TelcoinTAO"
                     }
-
                 }
                 div { class: "footer-right",
-                    span { class: "footer-version", "v0.1.6" }
-                    span { class: "footer-copy", "© 2025 Telcoin" }
+                    span { class: "footer-version", "v0.1.7" }
+                    span { class: "footer-copy", "2026 · © Telcoin Association" }
                 }
             }
         }
