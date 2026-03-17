@@ -3692,3 +3692,111 @@ body { font-size: 15px !important; }
 @media (max-width: 700px) {
   .stats-strip-card { grid-template-columns: repeat(2, 1fr) !important; }
 }
+
+/* ══ FULL MOBILE AUDIT — ALL SCREEN SIZES ═══════════════════════════ */
+
+/* ── Tablet 768px-900px ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hero-top-row {
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+  .hero-left {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  /* Cards side by side on tablet */
+  .hero-cards-col {
+    width: 100% !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+    margin: 0 !important;
+  }
+  .hero-gas-card,
+  .hero-block-time-card {
+    flex: 1 !important;
+    width: auto !important;
+    /* Compact horizontal layout */
+    padding: 12px 14px !important;
+  }
+  .hero-gas-value { font-size: 20px !important; }
+  .hero-gas-chart { display: none !important; } /* hide sparkline on tablet to save space */
+}
+
+/* ── Mobile 580px ────────────────────────────────────────────────── */
+@media (max-width: 580px) {
+  /* Hero */
+  .hero { padding: 24px 16px 28px !important; }
+  .hero-title { font-size: 22px !important; }
+  .hero-title-accent { font-size: 22px !important; }
+  .hero-search-input { font-size: 13px !important; padding: 13px 12px !important; }
+  .hero-search-btn { height: 46px !important; padding: 0 14px !important; }
+
+  /* Hint tags — single line, smaller */
+  .hero-hints {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 5px !important;
+    padding-bottom: 2px !important;
+  }
+  .hint-tag { font-size: 10px !important; padding: 2px 8px !important; white-space: nowrap !important; }
+
+  /* Cards — side by side, compact */
+  .hero-cards-col {
+    flex-direction: row !important;
+    gap: 10px !important;
+  }
+  .hero-gas-card,
+  .hero-block-time-card {
+    flex: 1 !important;
+    padding: 10px 12px !important;
+  }
+  .hero-gas-header { font-size: 9px !important; margin-bottom: 4px !important; }
+  .hero-gas-value { font-size: 16px !important; margin-bottom: 2px !important; }
+  .hero-gas-sub { font-size: 10px !important; margin-bottom: 0 !important; }
+  .hero-gas-chart { display: none !important; }
+
+  /* Stats strip — 2x2 */
+  .stats-strip-card {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .stat-row, .live-row {
+    padding: 12px 10px !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+  }
+  .stat-row:nth-child(odd) {
+    border-right: 1px solid var(--border-subtle) !important;
+  }
+  .stat-row:nth-last-child(-n+2) { border-bottom: none !important; }
+  .stat-row-label { font-size: 9px !important; }
+  .stat-row-value { font-size: 14px !important; }
+  .stat-row-sub { font-size: 10px !important; }
+  .stat-icon-wrap { width: 28px !important; height: 28px !important; }
+  .stat-icon { width: 13px !important; height: 13px !important; }
+
+  /* Home content */
+  .home-content { padding: 12px !important; }
+  .stats-strip-outer { padding: 10px 12px !important; }
+
+  /* Panels */
+  .panel-header { padding: 14px 16px !important; }
+  .panel-title { font-size: 14px !important; }
+  .home-row { padding: 10px 12px !important; gap: 8px !important; }
+  .home-row-icon { width: 32px !important; height: 32px !important; }
+  .home-row-id { font-size: 13px !important; }
+  .home-row-age { font-size: 11px !important; }
+  .home-row-label { font-size: 9px !important; }
+  .home-row-addr { font-size: 12px !important; }
+  .home-row-detail { font-size: 10px !important; }
+  .tx-badge { font-size: 10px !important; padding: 3px 7px !important; }
+}
+
+/* ── Small phone 400px ───────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .hero-title { font-size: 19px !important; }
+  .hero-gas-value { font-size: 14px !important; }
+  .logo-name { font-size: 14px !important; }
+  .logo-badge { display: none !important; }
+  .header-nav-faucet { font-size: 11px !important; padding: 4px 8px !important; }
+}
