@@ -3528,3 +3528,66 @@ body { font-size: 15px !important; }
 }
 .addr-copy-btn:hover { color: var(--tel-blue); }
 .addr-copy-btn.copied { color: var(--accent-green); }
+
+/* ══ MOBILE HERO FIXES ═══════════════════════════════════════════════ */
+
+@media (max-width: 860px) {
+  /* Stack layout */
+  .hero-top-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+    max-width: 100% !important;
+  }
+  .hero-left {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  /* Gas card compact on mobile */
+  .hero-gas-card {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 14px 16px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 16px !important;
+  }
+  .hero-gas-header { margin-bottom: 0 !important; }
+  .hero-gas-value { font-size: 20px !important; margin-bottom: 0 !important; }
+  .hero-gas-sub { margin-bottom: 0 !important; }
+  .hero-gas-chart {
+    flex: 1 !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  .hero-gas-chart svg { width: 100% !important; height: 36px !important; }
+
+  /* Hints — keep on one line, smaller */
+  .hero-hints { flex-wrap: nowrap !important; gap: 5px !important; }
+  .hint-tag { font-size: 10px !important; padding: 2px 7px !important; }
+}
+
+/* Stats strip — 2x2 on mobile, then Chain ID below */
+@media (max-width: 580px) {
+  .stats-strip-card {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* All borders reset for clean 2-col grid */
+  .stat-row, .live-row {
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+  }
+  .stat-row:nth-child(odd):not(:last-child) {
+    border-right: 1px solid var(--border-subtle) !important;
+  }
+  /* Last row spans full width if odd number */
+  .stat-row:last-child:nth-child(odd) {
+    grid-column: 1 / -1 !important;
+    border-right: none !important;
+  }
+  .stat-row { padding: 12px 8px !important; }
+  .stat-row-value { font-size: 15px !important; }
+  .stat-icon-wrap { width: 28px !important; height: 28px !important; }
+  .stat-icon { width: 14px !important; height: 14px !important; }
+}
