@@ -3457,3 +3457,74 @@ body { font-size: 15px !important; }
   .hero-left { width: 100% !important; max-width: 100% !important; }
   .hero-gas-card { width: 100% !important; margin: 0 !important; align-self: auto !important; }
 }
+
+/* ══ STAT ROWS — centre everything ══════════════════════════════════ */
+.stat-row, .live-row {
+  align-items: center !important;
+  text-align: center !important;
+}
+.stat-row-body {
+  align-items: center !important;
+}
+.stat-row-label,
+.stat-row-value,
+.stat-row-sub {
+  text-align: center !important;
+}
+.live-value-inline {
+  justify-content: center !important;
+}
+
+/* ══ ADDRESS TOOLTIP + COPY ICON ════════════════════════════════════ */
+.addr-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+}
+.addr-wrap:hover .addr-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.addr-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--bg-base);
+  border: 1px solid var(--border-mid);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.addr-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--border-mid);
+}
+.addr-copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.addr-copy-btn:hover { color: var(--tel-blue); }
+.addr-copy-btn.copied { color: var(--accent-green); }

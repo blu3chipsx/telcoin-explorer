@@ -6,7 +6,7 @@ use crate::services::rpc::{
     get_block_activity, subscribe_new_blocks,
     Block, NetworkStats, shorten_hash, shorten_addr, unix_to_age,
 };
-use crate::components::loading::{Loading, ErrorBox};
+use crate::components::loading::{Loading, ErrorBox, AddrDisplay};
 
 const VERSION: &str = "v0.1.6";
 
@@ -229,8 +229,9 @@ div { class: "dual-col",
                                         div { class: "home-row-mid",
                                             span { class: "home-row-label", "Validator" }
                                             Link { to: Route::AddressPage { address: block.validator.clone() },
-                                                span { class: "hash-cell home-row-addr",
-                                                    "{shorten_addr(&block.validator)}"
+                                                AddrDisplay {
+                                                    address: block.validator.clone(),
+                                                    short: shorten_addr(&block.validator)
                                                 }
                                             }
                                             span { class: "home-row-detail",

@@ -7,3 +7,5 @@ pub use loading::CopyButton;
 
 pub mod footer;
 pub use footer::Footer;
+
+pub use loading::AddrDisplay;
