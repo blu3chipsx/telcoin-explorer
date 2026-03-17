@@ -3800,3 +3800,123 @@ body { font-size: 15px !important; }
   .logo-badge { display: none !important; }
   .header-nav-faucet { font-size: 11px !important; padding: 4px 8px !important; }
 }
+
+/* ══ MOBILE COMPLETE REDESIGN — clean single column ═════════════════ */
+
+@media (max-width: 768px) {
+
+  /* Hero */
+  .hero { padding: 20px 16px 24px !important; }
+  .hero-title { font-size: 22px !important; line-height: 1.2 !important; }
+  .hero-search-box { border-radius: 10px !important; }
+  .hero-search-input { font-size: 13px !important; padding: 13px 14px !important; }
+  .hero-search-btn { height: 46px !important; padding: 0 16px !important; }
+  .hero-hints { flex-wrap: wrap !important; gap: 6px !important; }
+  .hint-tag { font-size: 11px !important; }
+
+  /* Hero cards — full width single column */
+  .hero-top-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .hero-left { width: 100% !important; max-width: 100% !important; }
+  .hero-cards-col {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+    margin: 0 !important;
+  }
+  .hero-gas-card,
+  .hero-block-time-card {
+    width: 100% !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 12px 16px !important;
+    gap: 12px !important;
+  }
+  .hero-gas-header {
+    font-size: 9px !important;
+    margin-bottom: 2px !important;
+  }
+  .hero-gas-value {
+    font-size: 18px !important;
+    margin-bottom: 0 !important;
+  }
+  .hero-gas-sub {
+    font-size: 10px !important;
+    margin-bottom: 0 !important;
+  }
+  .hero-gas-chart { display: none !important; }
+
+  /* Stats strip — 2 columns */
+  .stats-strip-outer { padding: 10px 16px !important; }
+  .stats-strip-card {
+    grid-template-columns: repeat(2, 1fr) !important;
+    border-radius: 12px !important;
+  }
+  .stat-row, .live-row {
+    padding: 14px 12px !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 4px !important;
+  }
+  .stat-row-body { align-items: center !important; }
+  .stat-row-label { font-size: 9px !important; text-align: center !important; }
+  .stat-row-value { font-size: 16px !important; text-align: center !important; }
+  .stat-row-sub { font-size: 10px !important; text-align: center !important; }
+  .live-value-inline { justify-content: center !important; font-size: 16px !important; }
+
+  /* Odd cells get right border */
+  .stats-strip-card > .stat-row:nth-child(odd),
+  .stats-strip-card > .live-row:nth-child(odd) {
+    border-right: 1px solid var(--border-subtle) !important;
+  }
+  /* Last 2 cells no bottom border */
+  .stats-strip-card > *:nth-last-child(-n+2) {
+    border-bottom: none !important;
+  }
+
+  .stat-icon-wrap {
+    width: 32px !important; height: 32px !important;
+    margin: 0 auto 4px !important;
+  }
+
+  /* Home panels */
+  .home-content { padding: 12px 16px !important; }
+  .dual-col { grid-template-columns: 1fr !important; gap: 12px !important; }
+  .panel { border-radius: 12px !important; }
+  .panel-header { padding: 14px 16px !important; }
+  .panel-title { font-size: 14px !important; }
+
+  /* Block rows */
+  .home-row {
+    grid-template-columns: 32px 1fr auto !important;
+    padding: 10px 14px !important;
+    gap: 10px !important;
+  }
+  .home-row-mid { display: none !important; } /* hide validator on mobile, too cramped */
+  .home-row-id { font-size: 14px !important; }
+  .home-row-age { font-size: 11px !important; }
+  .tx-badge { font-size: 11px !important; }
+
+  /* Footer */
+  .footer-inner {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 10px !important;
+    padding: 0 16px !important;
+  }
+  .footer-links { justify-content: center !important; }
+  .site-footer { padding: 16px 0 !important; }
+}
+
+/* ── Very small phones ≤380px ──────────────────────────────────────── */
+@media (max-width: 380px) {
+  .hero-title { font-size: 19px !important; }
+  .logo-badge { display: none !important; }
+  .header-inner { padding: 0 12px !important; }
+  .stat-row-value { font-size: 14px !important; }
+}
