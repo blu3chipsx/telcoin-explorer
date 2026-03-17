@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 use crate::router::Route;
-use crate::services::rpc::{get_blocks_page, Block, shorten_addr, unix_to_age};
+use crate::services::rpc::{get_blocks_page, Block, shorten_addr, unix_to_age, format_gas};
 use crate::components::loading::{Loading, ErrorBox};
 
 const PER_PAGE: u64 = 25;
@@ -115,8 +115,8 @@ pub fn BlocksPage(page: u64) -> Element {
                                                 span { class: "td-muted", "0" }
                                             }
                                         }
-                                        td { class: "td-muted td-mono", "{block.gas_used}" }
-                                        td { class: "td-faint td-mono", "{block.gas_limit}" }
+                                        td { class: "td-muted td-mono", { format_gas(block.gas_used) } }
+                                        td { class: "td-faint td-mono", { format_gas(block.gas_limit) } }
                                         td {
                                             {
                                                 let pct = if block.gas_limit > 0 {

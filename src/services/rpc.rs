@@ -756,3 +756,26 @@ pub async fn get_block_time_history(sample: u64) -> Vec<(u64, f64)> {
     }
     points
 }
+
+
+// ─── Number formatting helpers ────────────────────────────────────────────
+
+pub fn format_gas(gas: u64) -> String {
+    if gas >= 1_000_000 {
+        format!("{:.1}M", gas as f64 / 1_000_000.0)
+    } else if gas >= 1_000 {
+        format!("{:.0}K", gas as f64 / 1_000.0)
+    } else {
+        gas.to_string()
+    }
+}
+
+pub fn format_number(n: u64) -> String {
+    if n >= 1_000_000 {
+        format!("{:.2}M", n as f64 / 1_000_000.0)
+    } else if n >= 1_000 {
+        format!("{:.1}K", n as f64 / 1_000.0)
+    } else {
+        n.to_string()
+    }
+}

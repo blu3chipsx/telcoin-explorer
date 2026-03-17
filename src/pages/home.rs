@@ -4,7 +4,7 @@ use crate::router::Route;
 use crate::services::rpc::{
     get_latest_blocks, get_network_stats, get_avg_block_time,
     get_block_activity, get_block_time_history, subscribe_new_blocks,
-    Block, NetworkStats, shorten_hash, shorten_addr, unix_to_age,
+    Block, NetworkStats, shorten_hash, shorten_addr, unix_to_age, format_gas,
 };
 use crate::components::loading::{Loading, ErrorBox, AddrDisplay};
 
@@ -17,6 +17,7 @@ pub fn HomePage() -> Element {
     let mut loading  = use_signal(|| true);
     let mut error: Signal<Option<String>>        = use_signal(|| None);
     let mut last_updated: Signal<String>         = use_signal(|| "".to_string());
+    let mut search_error: Signal<bool>           = use_signal(|| false);
     let mut avg_block_time: Signal<f64>          = use_signal(|| 0.0);
     let mut gas_history: Signal<Vec<(u64, f64)>>        = use_signal(|| vec![]);
     let mut block_time_history: Signal<Vec<(u64, f64)>>  = use_signal(|| vec![]);
@@ -106,7 +107,12 @@ pub fn HomePage() -> Element {
                             }
                         }
                     }
-                            div { class: "hero-hints",
+                            if *search_error.read() {
+                        div { class: "search-error-msg",
+                            "⚠ Invalid search — enter a 0x address, tx hash, or block number"
+                        }
+                    }
+                    div { class: "hero-hints",
                                 span { "Supported: " }
                                 span { class: "hint-tag", "0x Address" }
                                 span { class: "hint-tag", "Tx Hash" }
@@ -187,17 +193,14 @@ pub fn HomePage() -> Element {
                                 }
                             }
                         }
-                        div { class: "stats-divider" }
                         StatRow { label: "LATEST BLOCK",
                             value: format!("#{}", s.latest_block),
                             sub: Some("Telcoin Network".to_string()) }
 
-                        div { class: "stats-divider" }
                         StatRow { label: "TRANSACTIONS",
                             value: format!("{}", total_txs),
                             sub: Some("Latest 10 blocks".to_string()) }
 
-                        div { class: "stats-divider" }
                         StatRow { label: "CHAIN ID",
                             value: format!("{}", s.chain_id),
                             sub: Some("Adiri Testnet".to_string()) }
@@ -392,10 +395,10 @@ fn StatRow(label: String, value: String, sub: Option<String>) -> Element {
 
 fn run_search() {
     use wasm_bindgen::JsCast;
-    let window = web_sys::window().unwrap();
-    let doc = window.document().unwrap();
+    let window = match web_sys::window() { Some(w) => w, None => return };
+    let doc = match window.document() { Some(d) => d, None => return };
     if let Some(el) = doc.get_element_by_id("home-search") {
-        let input: web_sys::HtmlInputElement = el.dyn_into().unwrap();
+        let input: web_sys::HtmlInputElement = match el.dyn_into() { Ok(i) => i, Err(_) => return };
         let q = input.value();
         let q = q.trim().to_string();
         if q.is_empty() { return; }
@@ -417,6 +420,9 @@ fn run_search() {
             });
         } else if q.chars().all(|c| c.is_ascii_digit()) {
             window.location().set_href(&format!("/block/{}", q)).ok();
+        } else {
+            // Invalid input - flash error via js eval
+            let _ = js_sys::eval("var el=document.getElementById('home-search');if(el){el.style.borderColor='#ef4444';el.style.boxShadow='0 0 0 3px rgba(239,68,68,0.2)';setTimeout(function(){el.style.borderColor='';el.style.boxShadow='';},2000);}");
         }
     }
 }

@@ -38,7 +38,7 @@ pub fn AddressPage(address: String) -> Element {
                 tx_count.set(Some(n));
             }
             if let Ok(latest) = get_block_number().await {
-                let from = latest.saturating_sub(1000);
+                let from = latest.saturating_sub(5000);
                 if let Ok(logs) = get_token_transfers(&address, from, latest).await {
                     let mut parsed = parse_transfer_logs(logs);
                     // Resolve token symbols for unique contracts
