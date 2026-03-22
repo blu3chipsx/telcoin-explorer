@@ -34,6 +34,10 @@ pub fn Header() -> Element {
                 }
                 div { style: "flex:1;" }
                 nav { class: "header-nav",
+                    Link { to: Route::EpochsPage {},
+                        class: "header-nav-link",
+                        "Epochs"
+                    }
                     Link { to: Route::ValidatorsPage {}, "Validators" }
                     a {
                         href: "https://telcoin.network/faucet",

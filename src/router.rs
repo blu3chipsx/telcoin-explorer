@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 use crate::components::layout::Layout;
+use crate::pages::epochs::EpochsPage;
 use crate::pages::{
     home::HomePage,
     block::BlockPage,
@@ -28,6 +29,8 @@ pub enum Route {
         TokenPage { address: String },
         #[route("/validators")]
         ValidatorsPage {},
+        #[route("/epochs")]
+        EpochsPage {},
     #[end_layout]
     #[route("/:..segments")]
     NotFoundPage { segments: Vec<String> },

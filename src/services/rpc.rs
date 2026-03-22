@@ -779,3 +779,67 @@ pub fn format_number(n: u64) -> String {
         n.to_string()
     }
 }
+
+// ─── Epoch Data from ConsensusRegistry ───────────────────────────────────
+
+#[derive(Debug, Clone)]
+pub struct EpochData {
+    pub epoch:            u64,
+    pub start_block:      u64,
+    pub duration_secs:    u64,
+    pub validator_count:  usize,
+    pub validators:       Vec<String>,
+}
+
+/// Get full current epoch data from ConsensusRegistry
+pub async fn get_current_epoch_data() -> Result<EpochData, String> {
+    // Fetch epoch number, validators, and block info in parallel
+    let (epoch_opt, validators_res, latest_block) = futures::join!(
+        get_epoch_info(),
+        get_validators_from_registry(),
+        get_block_number()
+    );
+
+    let epoch = epoch_opt.unwrap_or(0);
+    let validators = validators_res.unwrap_or_default();
+    let latest = latest_block.unwrap_or(0);
+
+    // Estimate epoch start block based on epoch duration
+    // Each epoch is EPOCH_DURATION_HOURS hours
+    // Blocks are ~1s each so epoch_duration_blocks ≈ EPOCH_DURATION_HOURS * 3600
+    let epoch_duration_secs = EPOCH_DURATION_HOURS * 3600;
+    let epoch_duration_blocks = epoch_duration_secs; // ~1 block/sec
+    let start_block = if epoch > 0 {
+        latest.saturating_sub(latest % epoch_duration_blocks)
+    } else { 0 };
+
+    Ok(EpochData {
+        epoch,
+        start_block,
+        duration_secs: epoch_duration_secs,
+        validator_count: validators.len(),
+        validators,
+    })
+}
+
+/// Get validator leader counts from recent blocks (approximation)
+/// Returns Vec<(address, leader_count)>
+pub async fn get_validator_leader_counts(sample_blocks: u64) -> Vec<(String, u64)> {
+    let latest = match get_block_number().await {
+        Ok(n) => n,
+        Err(_) => return vec![],
+    };
+    let mut counts: std::collections::HashMap<String, u64> = std::collections::HashMap::new();
+    for i in 0..sample_blocks {
+        let num = latest.saturating_sub(i);
+        if let Ok(b) = get_block_by_number(num).await {
+            if !b.validator.is_empty() &&
+               b.validator != "0x0000000000000000000000000000000000000000" {
+                *counts.entry(b.validator.to_lowercase()).or_insert(0) += 1;
+            }
+        }
+    }
+    let mut result: Vec<(String, u64)> = counts.into_iter().collect();
+    result.sort_by(|a, b| b.1.cmp(&a.1));
+    result
+}
